@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luna Wang</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: white; min-height: 100vh; }
+
+    .outer { width: 100%; overflow: hidden; position: relative; background: white; }
+
+    .frame {
+      width: 1440px;
+      height: 700px;
+      transform-origin: top left;
+      position: relative;
+      background: white;
+    }
+
+    .text-block {
+      position: absolute;
+      left: 128px;
+      top: 142px;
+      font-family: 'Poppins', sans-serif;
+      z-index: 5;
+    }
+
+    .intro-line {
+      font-size: 16px;
+      font-weight: 200;
+      color: #232323;
+      line-height: 56px;
+      white-space: nowrap;
+      display: block;
+      opacity: 0;
+    }
+
+    .kw-row {
+      display: block;
+      width: calc(1440px - 128px);
+      cursor: default;
+      user-select: none;
+      overflow: hidden;
+    }
+
+    .kw-item {
+      display: inline-block;
+      font-size: 48px;
+      font-weight: 400;
+      color: #232323;
+      line-height: 68px;
+      white-space: nowrap;
+      will-change: transform;
+      transform: translateY(100%);
+    }
+
+    #imgWrap {
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 100;
+      transform: translate(-50%, -50%);
+      visibility: hidden;
+      opacity: 0;
+    }
+    #imgWrap img {
+      height: 260px;
+      width: auto;
+      border-radius: 10px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<div class="outer" id="outer">
+  <div class="frame" id="frame">
+    <div class="text-block">
+      <span class="intro-line" id="introLine">i design the human layer of intelligent systems. This has taken shape in...</span>
+      <div id="kwList">
+        <div class="kw-row" data-img="img1.png">
+          <span class="kw-item">Money, redesigned</span>
+        </div>
+        <div class="kw-row" data-img="img2.png">
+          <span class="kw-item">When plans fall apart</span>
+        </div>
+        <div class="kw-row" data-img="img3.png">
+          <span class="kw-item">Complexity, made legible</span>
+        </div>
+        <div class="kw-row" data-img="img1.png">
+          <span class="kw-item">Intelligence you can feel</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="imgWrap"><img id="floatImg" src="img1.png"></div>
+
+<script>
+  // ── Scale frame ───────────────────────────────────────────────────
+  var frame = document.getElementById('frame');
+  var outer = document.getElementById('outer');
+
+  function scaleFrame() {
+    var s = window.innerWidth / 1440;
+    frame.style.transform = 'scale(' + s + ')';
+    outer.style.height = (700 * s) + 'px';
+  }
+  scaleFrame();
+  window.addEventListener('resize', scaleFrame);
+
+  // ── Clip entrance — 2x duration ───────────────────────────────────
+  var intro = document.getElementById('introLine');
+  var items = document.querySelectorAll('.kw-item');
+
+  // Intro fade
+  gsap.to(intro, { opacity: 1, duration: 1.0, ease: 'power2.out', delay: 0.2 });
+
+  // Clip slide up — each line staggered, 1.4s duration (2x of 0.7)
+  items.forEach(function(item, i) {
+    gsap.to(item, {
+      y: '0%',
+      duration: 1.4,
+      ease: 'power3.out',
+      delay: 0.3 + i * 0.18
+    });
+  });
+
+  // ── Text parallax on hover ────────────────────────────────────────
+  document.querySelectorAll('.kw-row').forEach(function(row) {
+    var textEl = row.querySelector('.kw-item');
+    var bounds;
+
+    row.addEventListener('mouseenter', function() {
+      bounds = row.getBoundingClientRect();
+    });
+
+    row.addEventListener('mousemove', function(e) {
+      if (!bounds) bounds = row.getBoundingClientRect();
+      var relX = ((e.clientX - bounds.left) / bounds.width - 0.5) * 2;
+      gsap.to(textEl, { x: relX * 10, duration: 0.4, ease: 'power2.out' });
+    });
+
+    row.addEventListener('mouseleave', function() {
+      gsap.to(textEl, { x: 0, duration: 0.5, ease: 'power3.out' });
+    });
+  });
+
+  // ── GSAP cursor-following image ───────────────────────────────────
+  var wrap = document.getElementById('imgWrap');
+  var img  = document.getElementById('floatImg');
+
+  var setLeft = gsap.quickTo(wrap, 'left', { duration: 0.35, ease: 'power3' });
+  var setTop  = gsap.quickTo(wrap, 'top',  { duration: 0.35, ease: 'power3' });
+  var firstEnter = true;
+
+  function onMove(e) {
+    if (firstEnter) {
+      gsap.set(wrap, { left: e.clientX, top: e.clientY });
+      firstEnter = false;
+    } else {
+      setLeft(e.clientX);
+      setTop(e.clientY);
+    }
+  }
+
+  var fade = gsap.to(wrap, {
+    autoAlpha: 1,
+    duration: 0.15,
+    ease: 'none',
+    paused: true,
+    onReverseComplete: function() {
+      document.removeEventListener('mousemove', onMove);
+    }
+  });
+
+  document.querySelectorAll('.kw-row').forEach(function(el) {
+    el.addEventListener('mouseenter', function(e) {
+      img.src = el.getAttribute('data-img');
+      firstEnter = true;
+      onMove(e);
+      fade.play();
+      document.addEventListener('mousemove', onMove);
+    });
+    el.addEventListener('mouseleave', function() {
+      fade.reverse();
+    });
+  });
+</script>
+</body>
+</html>
