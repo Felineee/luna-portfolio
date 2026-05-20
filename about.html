@@ -230,13 +230,12 @@
       flex-shrink: 0;
     }
     .tool-logo img {
-      width: 22px; height: 22px;
+      width: 24px; height: 24px;
       object-fit: contain;
-      filter: none;
-      transition: opacity 0.25s;
-      opacity: 0.35;
+      transition: transform 0.25s ease, opacity 0.25s;
+      opacity: 0.55;
     }
-    .tool-item:hover .tool-logo img { opacity: 1; }
+    .tool-item:hover .tool-logo img { opacity: 1; transform: scale(1.15); }
     .tool-logo-letter {
       width: 22px; height: 22px;
       border: 1.5px solid #333;
@@ -304,8 +303,34 @@
       transition: width 0.05s linear;
     }
 
+    /* ─── SPOTLIGHT CURSOR ──────────────────────────── */
+    .spotlight {
+      position: fixed;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.3) 45%, transparent 70%);
+      mix-blend-mode: difference;
+      pointer-events: none;
+      z-index: 9999;
+      left: -600px; top: -600px;
+      transform: translate(-50%, -50%);
+      will-change: left, top;
+      transition: opacity 0.3s;
+    }
+
+    /* ─── TYPING CURSOR ─────────────────────────────── */
+    .type-cursor {
+      display: inline-block;
+      width: 2px; height: 0.9em;
+      background: var(--ink);
+      margin-left: 1px;
+      vertical-align: -0.05em;
+      animation: blink 0.75s step-end infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
     /* ─── INIT STATES ───────────────────────────────── */
-    .fade-up { opacity: 0; transform: translateY(24px); }
+    .fade-up { opacity: 0; transform: translateY(40px); }
 
     /* ─── RESPONSIVE ────────────────────────────────── */
     @media (max-width: 768px) {
@@ -326,6 +351,8 @@
 
 <!-- Progress bar -->
 <div id="progress"></div>
+<!-- Spotlight cursor -->
+<div class="spotlight" id="spotlight"></div>
 
 <!-- NAV -->
 <nav>
@@ -354,9 +381,7 @@
       <div class="two-col">
         <div class="hero-greeting fade-up">✦ &nbsp; Luna Wang &nbsp; ✦</div>
         <div class="hero-bio">
-          <p class="bio-p1 fade-up">
-            Trained in interaction design and architecture, I bring a systems-level lens to product design — turning complex workflows into experiences that feel clear, scalable, and trustworthy.
-          </p>
+          <p class="bio-p1" id="typed-bio"></p>
           <p class="bio-p2 fade-up">
             My work spans <strong>LLM-powered acquisition flows and agentic AI finance</strong> at Verizon Visa Card,
             <strong>AI and emerging technology products</strong> at Samsung,
@@ -427,11 +452,11 @@
         <div class="tools-grid">
 
           <div class="tool-item fade-up">
-            <div class="tool-logo"><img src="https://cdn.simpleicons.org/figma/ffffff" alt="Figma" loading="lazy"></div>
+            <div class="tool-logo"><img src="https://cdn.simpleicons.org/figma" alt="Figma" loading="lazy"></div>
             <span class="tool-name">Figma</span>
           </div>
           <div class="tool-item fade-up">
-            <div class="tool-logo"><img src="https://cdn.simpleicons.org/figma/ffffff" alt="Figma Make" loading="lazy"></div>
+            <div class="tool-logo"><img src="https://cdn.simpleicons.org/figma" alt="Figma Make" loading="lazy"></div>
             <span class="tool-name">Figma Make</span>
           </div>
           <div class="tool-item fade-up">
@@ -445,7 +470,7 @@
           </div>
 
           <div class="tool-item fade-up">
-            <div class="tool-logo"><img src="https://cdn.simpleicons.org/anthropic/ffffff" alt="Claude" loading="lazy"></div>
+            <div class="tool-logo"><img src="https://cdn.simpleicons.org/anthropic" alt="Claude" loading="lazy"></div>
             <span class="tool-name">Claude Code</span>
           </div>
           <div class="tool-item fade-up">
@@ -460,20 +485,20 @@
             <span class="tool-name">UserTesting</span>
           </div>
           <div class="tool-item fade-up">
-            <div class="tool-logo"><img src="https://cdn.simpleicons.org/jira/ffffff" alt="Jira" loading="lazy"></div>
+            <div class="tool-logo"><img src="https://cdn.simpleicons.org/jira" alt="Jira" loading="lazy"></div>
             <span class="tool-name">Jira</span>
           </div>
 
           <div class="tool-item fade-up">
-            <div class="tool-logo"><img src="https://cdn.simpleicons.org/adobephotoshop/ffffff" alt="Photoshop" loading="lazy"></div>
+            <div class="tool-logo"><img src="https://cdn.simpleicons.org/adobephotoshop" alt="Photoshop" loading="lazy"></div>
             <span class="tool-name">Photoshop</span>
           </div>
           <div class="tool-item fade-up">
-            <div class="tool-logo"><img src="https://cdn.simpleicons.org/adobeillustrator/ffffff" alt="Illustrator" loading="lazy"></div>
+            <div class="tool-logo"><img src="https://cdn.simpleicons.org/adobeillustrator" alt="Illustrator" loading="lazy"></div>
             <span class="tool-name">Illustrator</span>
           </div>
           <div class="tool-item fade-up">
-            <div class="tool-logo"><img src="https://cdn.simpleicons.org/adobeaftereffects/ffffff" alt="After Effects" loading="lazy"></div>
+            <div class="tool-logo"><img src="https://cdn.simpleicons.org/adobeaftereffects" alt="After Effects" loading="lazy"></div>
             <span class="tool-name">After Effects</span>
           </div>
 
@@ -511,54 +536,159 @@
 <script>
   gsap.registerPlugin(ScrollTrigger);
 
-  // ── Progress bar ─────────────────────────
+  // ── Progress bar ─────────────────────────────────────────────
   window.addEventListener('scroll', function() {
-    var scrolled = window.scrollY;
-    var total = document.body.scrollHeight - window.innerHeight;
-    document.getElementById('progress').style.width = (scrolled / total * 100) + '%';
+    var pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    document.getElementById('progress').style.width = pct + '%';
   });
 
-  // ── Page entrance ─────────────────────────
-  gsap.to('nav', { opacity: 1, duration: 0.6, delay: 0.1 });
-
-  var heroEls = document.querySelectorAll('.hero .fade-up');
-  heroEls.forEach(function(el, i) {
-    gsap.to(el, {
-      opacity: 1, y: 0,
-      duration: 1.0,
-      ease: 'power3.out',
-      delay: 0.2 + i * 0.15
-    });
+  // ── Spotlight cursor ──────────────────────────────────────────
+  var spot = document.getElementById('spotlight');
+  var spotX = gsap.quickTo(spot, 'left', { duration: 0.55, ease: 'power3.out' });
+  var spotY = gsap.quickTo(spot, 'top',  { duration: 0.55, ease: 'power3.out' });
+  window.addEventListener('mousemove', function(e) {
+    spotX(e.clientX);
+    spotY(e.clientY);
   });
 
-  // ── Scroll-triggered fade-ups ─────────────
-  document.querySelectorAll('.section-experience .fade-up, .section-tools .fade-up, .section-education .fade-up').forEach(function(el) {
-    gsap.to(el, {
-      scrollTrigger: {
-        trigger: el,
-        start: 'top 88%',
-        toggleActions: 'play none none none'
-      },
-      opacity: 1,
-      y: 0,
-      duration: 0.7,
-      ease: 'power2.out'
-    });
+  // ── Natural typing animation ──────────────────────────────────
+  (function() {
+    var target = document.getElementById('typed-bio');
+    if (!target) return;
+
+    // Insert blinking cursor span
+    var cursor = document.createElement('span');
+    cursor.className = 'type-cursor';
+    target.appendChild(cursor);
+
+    // Create a text node before the cursor
+    var textNode = document.createTextNode('');
+    target.insertBefore(textNode, cursor);
+
+    var fullText = 'Trained in interaction design and architecture, I bring a systems-level lens to product design — turning complex workflows into experiences that feel clear, scalable, and trustworthy.';
+    var typed = '';
+
+    function rand(a, b) { return (a + Math.random() * (b - a)) | 0; }
+    function pause(ms)  { return new Promise(function(r) { setTimeout(r, ms); }); }
+
+    async function run() {
+      for (var i = 0; i < fullText.length; i++) {
+        var ch = fullText[i];
+
+        // ~2.5% chance: mistype then backspace (skip spaces and near end)
+        if (Math.random() < 0.025 && ch !== ' ' && i < fullText.length - 8) {
+          // Type a neighbouring key
+          var offset = Math.random() < 0.5 ? 1 : -1;
+          var badChar = String.fromCharCode(ch.charCodeAt(0) + offset);
+          textNode.nodeValue = typed + badChar;
+          await pause(rand(60, 180));
+          // Realise mistake — pause, then delete
+          if (Math.random() < 0.55) await pause(rand(140, 440));
+          textNode.nodeValue = typed;       // backspace
+          await pause(rand(70, 150));
+          if (Math.random() < 0.4) await pause(rand(180, 520));
+        }
+
+        // Per-character delay
+        var ms;
+        if      (ch === ' ')                  ms = rand(38, 105);
+        else if (ch === ',' || ch === ';')    ms = rand(120, 300);
+        else if (ch === '.' || ch === '—') ms = rand(170, 420);
+        else                                  ms = rand(24, 90);
+
+        // Random micro-hesitation (~3%)
+        if (Math.random() < 0.03) await pause(rand(380, 880));
+
+        typed += ch;
+        textNode.nodeValue = typed;
+        await pause(ms);
+      }
+      // Cursor keeps blinking — natural feel
+    }
+
+    setTimeout(run, 720);
+  })();
+
+  // ── Nav entrance ─────────────────────────────────────────────
+  gsap.fromTo('nav', { opacity: 0 }, { opacity: 1, duration: 0.5, delay: 0.1 });
+
+  // ── Hero entrance ─────────────────────────────────────────────
+  // greeting, bio-p2, CTAs
+  ['.hero-greeting', '.bio-p2', '.hero-ctas'].forEach(function(sel, i) {
+    gsap.fromTo(sel,
+      { opacity: 0, y: 52, scale: 0.96 },
+      { opacity: 1, y: 0, scale: 1,
+        duration: 1.1, ease: 'power3.out',
+        delay: 0.35 + i * 0.2 }
+    );
   });
 
-  // ── Section labels slide in ───────────────
+  // ── Experience rows — staggered group ────────────────────────
+  var expRows = gsap.utils.toArray('.exp-row');
+  if (expRows.length) {
+    gsap.fromTo(expRows,
+      { opacity: 0, y: 64, scale: 0.96 },
+      { opacity: 1, y: 0, scale: 1,
+        duration: 1.0, ease: 'power3.out',
+        stagger: 0.1,
+        scrollTrigger: {
+          trigger: expRows[0],
+          start: 'top 84%',
+          toggleActions: 'play none none none'
+        }
+      }
+    );
+  }
+
+  // ── Tool items — staggered ────────────────────────────────────
+  var toolItems = gsap.utils.toArray('.tool-item');
+  if (toolItems.length) {
+    gsap.fromTo(toolItems,
+      { opacity: 0, y: 50, scale: 0.91 },
+      { opacity: 1, y: 0, scale: 1,
+        duration: 0.85, ease: 'power3.out',
+        stagger: 0.07,
+        scrollTrigger: {
+          trigger: '.tools-grid',
+          start: 'top 82%',
+          toggleActions: 'play none none none'
+        }
+      }
+    );
+  }
+
+  // ── Education cards ───────────────────────────────────────────
+  var eduCards = gsap.utils.toArray('.edu-card');
+  if (eduCards.length) {
+    gsap.fromTo(eduCards,
+      { opacity: 0, y: 58, scale: 0.95 },
+      { opacity: 1, y: 0, scale: 1,
+        duration: 1.0, ease: 'power3.out',
+        stagger: 0.2,
+        scrollTrigger: {
+          trigger: '.edu-grid',
+          start: 'top 82%',
+          toggleActions: 'play none none none'
+        }
+      }
+    );
+  }
+
+  // ── Section labels slide in ───────────────────────────────────
   document.querySelectorAll('.sec-label').forEach(function(el) {
-    gsap.from(el, {
-      scrollTrigger: { trigger: el, start: 'top 85%' },
-      x: -20, opacity: 0,
-      duration: 0.8, ease: 'power2.out'
-    });
+    gsap.fromTo(el,
+      { x: -32, opacity: 0 },
+      { x: 0, opacity: 1,
+        duration: 0.9, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 86%' }
+      }
+    );
   });
 
-  // ── Tool hover lift ───────────────────────
+  // ── Tool hover lift ───────────────────────────────────────────
   document.querySelectorAll('.tool-item').forEach(function(el) {
     el.addEventListener('mouseenter', function() {
-      gsap.to(el, { y: -3, duration: 0.2, ease: 'power2.out' });
+      gsap.to(el, { y: -5, duration: 0.18, ease: 'power2.out' });
     });
     el.addEventListener('mouseleave', function() {
       gsap.to(el, { y: 0, duration: 0.3, ease: 'power2.out' });
