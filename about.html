@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Luna Wang</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #000;
+      --white: #fff;
+      --ink:   #111;
+      --mid:   #888;
+      --rule:  #e5e5e5;
+      --font:  -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+      --max:   1100px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--white);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── NAV ──────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px;
+      height: 56px;
+      border-bottom: 1px solid var(--rule);
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .nav-links { display: flex; gap: 40px; }
+    .nav-links a {
+      font-size: 12px; font-weight: 400;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      text-decoration: none; color: var(--mid);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--black); }
+    .nav-icons { display: flex; gap: 16px; align-items: center; }
+    .nav-icons a { display: flex; color: var(--black); text-decoration: none; opacity: 0.6; transition: opacity 0.2s; }
+    .nav-icons a:hover { opacity: 1; }
+    .nav-icons svg { width: 18px; height: 18px; }
+
+    /* ─── LAYOUT ────────────────────────────────────── */
+    main { padding-top: 56px; }
+
+    .container {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 0 64px;
+      align-items: start;
+    }
+
+    /* ─── SECTION LABEL ─────────────────────────────── */
+    .sec-label {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--mid);
+      padding-top: 4px;
+      position: sticky;
+      top: 72px;
+    }
+    .sec-label span { color: var(--black); }
+
+    /* ─── HERO ──────────────────────────────────────── */
+    .hero {
+      padding: 120px 0 100px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .hero-greeting {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 40px;
+    }
+    .hero-bio {
+      max-width: 780px;
+    }
+    .bio-p1 {
+      font-size: clamp(22px, 2.8vw, 32px);
+      font-weight: 300;
+      line-height: 1.45;
+      color: var(--ink);
+      margin-bottom: 36px;
+      letter-spacing: -0.01em;
+    }
+    .bio-p2 {
+      font-size: clamp(15px, 1.6vw, 18px);
+      font-weight: 300;
+      line-height: 1.75;
+      color: #555;
+    }
+    .bio-p2 strong { font-weight: 500; color: var(--ink); }
+
+    /* ─── EXPERIENCE ─────────────────────────────────── */
+    .section-experience {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .exp-header {
+      display: grid;
+      grid-template-columns: 2fr 1.6fr 2fr 100px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 0;
+    }
+    .exp-header span {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #bbb;
+    }
+    .exp-row {
+      display: grid;
+      grid-template-columns: 2fr 1.6fr 2fr 100px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--rule);
+      align-items: center;
+      cursor: default;
+      transition: background 0.2s;
+      border-radius: 2px;
+    }
+    .exp-row:hover { background: #fafafa; }
+    .exp-role {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--ink);
+    }
+    .exp-company {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--mid);
+    }
+    .exp-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.03em;
+      color: #555;
+      border: 1px solid #d8d8d8;
+      border-radius: 100px;
+      padding: 3px 10px;
+    }
+    .exp-year {
+      font-size: 13px;
+      font-weight: 300;
+      color: #aaa;
+      text-align: right;
+    }
+
+    /* ─── TOOLS ──────────────────────────────────────── */
+    .section-tools {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+    .tool-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--rule);
+      cursor: default;
+    }
+    .tool-item:nth-last-child(-n+3) { border-bottom: none; }
+    .tool-logo {
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .tool-logo img {
+      width: 22px; height: 22px;
+      object-fit: contain;
+      filter: grayscale(1);
+      transition: filter 0.25s, opacity 0.25s;
+      opacity: 0.7;
+    }
+    .tool-item:hover .tool-logo img { filter: none; opacity: 1; }
+    .tool-logo-letter {
+      width: 22px; height: 22px;
+      border: 1.5px solid #ccc;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 500;
+      color: #888;
+      transition: border-color 0.25s, color 0.25s;
+    }
+    .tool-item:hover .tool-logo-letter { border-color: var(--black); color: var(--black); }
+    .tool-name {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--ink);
+      transition: color 0.2s;
+    }
+
+    /* ─── EDUCATION ──────────────────────────────────── */
+    .section-education {
+      padding: 80px 0 120px;
+    }
+    .edu-row {
+      display: grid;
+      grid-template-columns: 2fr 1.6fr 100px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--rule);
+      align-items: center;
+    }
+    .edu-row:first-child { border-top: 1px solid var(--rule); }
+    .edu-degree {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--ink);
+    }
+    .edu-school {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--mid);
+    }
+    .edu-year {
+      font-size: 13px;
+      font-weight: 300;
+      color: #aaa;
+      text-align: right;
+    }
+
+    /* ─── SCROLL PROGRESS ───────────────────────────── */
+    #progress {
+      position: fixed;
+      top: 56px; left: 0;
+      height: 1px;
+      background: var(--black);
+      width: 0%;
+      z-index: 200;
+      transition: width 0.05s linear;
+    }
+
+    /* ─── INIT STATES ───────────────────────────────── */
+    .fade-up { opacity: 0; transform: translateY(24px); }
+
+    /* ─── RESPONSIVE ────────────────────────────────── */
+    @media (max-width: 768px) {
+      nav { padding: 0 24px; }
+      .container { padding: 0 24px; }
+      .two-col { grid-template-columns: 1fr; gap: 24px 0; }
+      .sec-label { position: static; margin-bottom: 16px; }
+      .exp-header { display: none; }
+      .exp-row { grid-template-columns: 1fr; gap: 6px; }
+      .exp-year { text-align: left; }
+      .tools-grid { grid-template-columns: repeat(2, 1fr); }
+      .edu-row { grid-template-columns: 1fr 80px; }
+      .edu-school { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Progress bar -->
+<div id="progress"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="#">Projects</a>
+    <a href="about.html" class="active">About</a>
+  </div>
+  <div class="nav-icons">
+    <!-- LinkedIn -->
+    <a href="https://www.linkedin.com/in/luna-zhiyue-wang/" target="_blank" aria-label="LinkedIn">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+    </a>
+    <!-- Email -->
+    <a href="mailto:lunazhiyuewang@gmail.com" aria-label="Email">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+    </a>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ── HERO ─────────────────────────────── -->
+  <section class="hero">
+    <div class="container">
+      <p class="hero-greeting fade-up">✦ &nbsp; Luna Wang &nbsp; ✦</p>
+      <div class="hero-bio">
+        <p class="bio-p1 fade-up">
+          Trained in interaction design and architecture, I bring a systems-level lens to product design — turning complex workflows into experiences that feel clear, scalable, and trustworthy.
+        </p>
+        <p class="bio-p2 fade-up">
+          My work spans <strong>LLM-powered acquisition flows and agentic AI finance</strong> experiences at Verizon Visa Card,
+          <strong>AI and emerging technology products</strong> at Samsung,
+          and <strong>e-commerce growth</strong> as co-founder and product lead at Cfierce.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EXPERIENCE ─────────────────────── -->
+  <section class="section-experience">
+    <div class="container">
+      <div class="two-col">
+        <div class="sec-label">✦ &nbsp;<span>Experience</span>&nbsp; ✦</div>
+        <div>
+          <div class="exp-header">
+            <span>Role</span><span>Company</span><span>Focus</span><span style="text-align:right">Year</span>
+          </div>
+          <div class="exp-row fade-up">
+            <div class="exp-role">Senior Product Designer</div>
+            <div class="exp-company">Verizon Visa Card</div>
+            <div class="exp-tags"><span class="tag">Payment</span><span class="tag">Loyalty</span><span class="tag">AI</span></div>
+            <div class="exp-year">2025–26</div>
+          </div>
+          <div class="exp-row fade-up">
+            <div class="exp-role">Senior Product Designer</div>
+            <div class="exp-company">Delta Airlines</div>
+            <div class="exp-tags"><span class="tag">Travel</span><span class="tag">On-demand</span></div>
+            <div class="exp-year">2024</div>
+          </div>
+          <div class="exp-row fade-up">
+            <div class="exp-role">Product Designer</div>
+            <div class="exp-company">Aeromexico</div>
+            <div class="exp-tags"><span class="tag">Travel &amp; Hospitality</span></div>
+            <div class="exp-year">2023</div>
+          </div>
+          <div class="exp-row fade-up">
+            <div class="exp-role">Product Designer</div>
+            <div class="exp-company">ADT Security System</div>
+            <div class="exp-tags"><span class="tag">B2B</span></div>
+            <div class="exp-year">2023</div>
+          </div>
+          <div class="exp-row fade-up">
+            <div class="exp-role">Product Designer</div>
+            <div class="exp-company">Samsung</div>
+            <div class="exp-tags"><span class="tag">AI</span><span class="tag">AR/VR</span></div>
+            <div class="exp-year">2022</div>
+          </div>
+          <div class="exp-row fade-up">
+            <div class="exp-role">Co-founder, Product Lead</div>
+            <div class="exp-company">Cfierce</div>
+            <div class="exp-tags"><span class="tag">Growth</span><span class="tag">Retail</span></div>
+            <div class="exp-year">2018–21</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TOOLS ──────────────────────────── -->
+  <section class="section-tools">
+    <div class="container">
+      <div class="two-col">
+        <div class="sec-label">✦ &nbsp;<span>Tools</span>&nbsp; ✦</div>
+        <div class="tools-grid">
+
+          <div class="tool-item fade-up">
+            <div class="tool-logo"><img src="https://cdn.simpleicons.org/figma/000000" alt="Figma" loading="lazy"></div>
+            <span class="tool-name">Figma</span>
+          </div>
+          <div class="tool-item fade-up">
+            <div class="tool-logo"><img src="https://cdn.simpleicons.org/figma/000000" alt="Figma Make" loading="lazy"></div>
+            <span class="tool-name">Figma Make</span>
+          </div>
+          <div class="tool-item fade-up">
+            <div class="tool-logo">
+              <!-- Lovable custom mark -->
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z" fill="#000" opacity="0.75"/>
+              </svg>
+            </div>
+            <span class="tool-name">Lovable</span>
+          </div>
+
+          <div class="tool-item fade-up">
+            <div class="tool-logo"><img src="https://cdn.simpleicons.org/anthropic/000000" alt="Claude" loading="lazy"></div>
+            <span class="tool-name">Claude Code</span>
+          </div>
+          <div class="tool-item fade-up">
+            <div class="tool-logo">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="3" width="20" height="14" rx="2" stroke="#000" stroke-width="1.5"/>
+                <path d="M8 21h8M12 17v4" stroke="#000" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="8" cy="10" r="2.5" fill="#000" opacity="0.7"/>
+                <path d="M13 8.5h4M13 11.5h3" stroke="#000" stroke-width="1.3" stroke-linecap="round" opacity="0.5"/>
+              </svg>
+            </div>
+            <span class="tool-name">UserTesting</span>
+          </div>
+          <div class="tool-item fade-up">
+            <div class="tool-logo"><img src="https://cdn.simpleicons.org/jira/000000" alt="Jira" loading="lazy"></div>
+            <span class="tool-name">Jira</span>
+          </div>
+
+          <div class="tool-item fade-up">
+            <div class="tool-logo"><img src="https://cdn.simpleicons.org/adobephotoshop/000000" alt="Photoshop" loading="lazy"></div>
+            <span class="tool-name">Photoshop</span>
+          </div>
+          <div class="tool-item fade-up">
+            <div class="tool-logo"><img src="https://cdn.simpleicons.org/adobeillustrator/000000" alt="Illustrator" loading="lazy"></div>
+            <span class="tool-name">Illustrator</span>
+          </div>
+          <div class="tool-item fade-up">
+            <div class="tool-logo"><img src="https://cdn.simpleicons.org/adobeaftereffects/000000" alt="After Effects" loading="lazy"></div>
+            <span class="tool-name">After Effects</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EDUCATION ──────────────────────── -->
+  <section class="section-education">
+    <div class="container">
+      <div class="two-col">
+        <div class="sec-label">✦ &nbsp;<span>Education</span>&nbsp; ✦</div>
+        <div>
+          <div class="edu-row fade-up">
+            <div class="edu-degree">Human Computer Interaction</div>
+            <div class="edu-school">University of California, Berkeley</div>
+            <div class="edu-year">2020–21</div>
+          </div>
+          <div class="edu-row fade-up">
+            <div class="edu-degree">Architecture, Landscape Architecture</div>
+            <div class="edu-school">University of Edinburgh</div>
+            <div class="edu-year">2016–18</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  gsap.registerPlugin(ScrollTrigger);
+
+  // ── Progress bar ─────────────────────────
+  window.addEventListener('scroll', function() {
+    var scrolled = window.scrollY;
+    var total = document.body.scrollHeight - window.innerHeight;
+    document.getElementById('progress').style.width = (scrolled / total * 100) + '%';
+  });
+
+  // ── Page entrance ─────────────────────────
+  gsap.to('nav', { opacity: 1, duration: 0.6, delay: 0.1 });
+
+  var heroEls = document.querySelectorAll('.hero .fade-up');
+  heroEls.forEach(function(el, i) {
+    gsap.to(el, {
+      opacity: 1, y: 0,
+      duration: 1.0,
+      ease: 'power3.out',
+      delay: 0.2 + i * 0.15
+    });
+  });
+
+  // ── Scroll-triggered fade-ups ─────────────
+  document.querySelectorAll('.section-experience .fade-up, .section-tools .fade-up, .section-education .fade-up').forEach(function(el) {
+    gsap.to(el, {
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 88%',
+        toggleActions: 'play none none none'
+      },
+      opacity: 1,
+      y: 0,
+      duration: 0.7,
+      ease: 'power2.out'
+    });
+  });
+
+  // ── Section labels slide in ───────────────
+  document.querySelectorAll('.sec-label').forEach(function(el) {
+    gsap.from(el, {
+      scrollTrigger: { trigger: el, start: 'top 85%' },
+      x: -20, opacity: 0,
+      duration: 0.8, ease: 'power2.out'
+    });
+  });
+
+  // ── Tool hover lift ───────────────────────
+  document.querySelectorAll('.tool-item').forEach(function(el) {
+    el.addEventListener('mouseenter', function() {
+      gsap.to(el, { y: -3, duration: 0.2, ease: 'power2.out' });
+    });
+    el.addEventListener('mouseleave', function() {
+      gsap.to(el, { y: 0, duration: 0.3, ease: 'power2.out' });
+    });
+  });
+</script>
+</body>
+</html>
