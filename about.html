@@ -17,10 +17,9 @@
       --bg:    #0a0a0a;
       --ink:   #f0f0f0;
       --mid:   #939393;
-      --dim:   #333;
       --rule:  #1e1e1e;
       --font:  'Poppins', sans-serif;
-      --max:   1100px;
+      --max:   1268px;
     }
 
     html { scroll-behavior: smooth; }
@@ -58,6 +57,25 @@
     .nav-icons a:hover { opacity: 1; }
     .nav-icons svg { width: 18px; height: 18px; }
 
+    /* ─── THEME TOGGLE ──────────────────────────── */
+    .theme-toggle {
+      display: flex; align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border: 1px solid var(--rule);
+      border-radius: 100px;
+      background: transparent;
+      color: var(--mid);
+      font-family: var(--font);
+      font-size: 13px; font-weight: 300;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .theme-toggle:hover { border-color: #555; color: var(--ink); }
+    .theme-toggle .toggle-icon { font-size: 14px; line-height: 1; }
+
     /* ─── LAYOUT ────────────────────────────────────── */
     main { padding-top: 56px; }
 
@@ -89,7 +107,7 @@
 
     /* ─── HERO ──────────────────────────────────────── */
     .hero {
-      padding: 120px 0 100px;
+      padding: 80px 0;
     }
     .hero-greeting {
       font-size: 16px;
@@ -113,7 +131,7 @@
       font-weight: 200;
       line-height: 1.85;
       color: #939393;
-      margin-bottom: 48px;
+      margin-bottom: 28px;
     }
     .bio-p2 strong { font-weight: 400; color: #fff; }
 
@@ -153,7 +171,7 @@
 
     /* ─── EXPERIENCE ─────────────────────────────────── */
     .section-experience {
-      padding: 80px 0;
+      padding: 52px 0;
     }
     .exp-header {
       display: grid;
@@ -209,12 +227,13 @@
 
     /* ─── TOOLS ──────────────────────────────────────── */
     .section-tools {
-      padding: 80px 0;
+      padding: 52px 0;
     }
     .tools-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 0;
+      padding-left: calc(200px + 64px);
     }
     .tool-item {
       display: flex;
@@ -246,7 +265,7 @@
 
     /* ─── EDUCATION ──────────────────────────────────── */
     .section-education {
-      padding: 80px 0 120px;
+      padding: 52px 0;
     }
     .edu-grid {
       display: grid;
@@ -254,7 +273,7 @@
       gap: 0 48px;
     }
     .edu-card {
-      padding: 36px 0 0;
+      padding: 0;
       cursor: default;
     }
     .edu-card-year {
@@ -336,7 +355,7 @@
     /* ─── POLAROIDS ─────────────────────────────────── */
     .section-polaroids {
       background: var(--bg);
-      padding: 80px 0;
+      padding: 52px 0;
       overflow: hidden;
     }
     .polaroids-hint {
@@ -392,6 +411,32 @@
       margin-top: 10px;
     }
 
+    /* ─── LIGHT THEME ──────────────────────────── */
+    body.light {
+      --bg:   #f5f5f5;
+      --ink:  #0a0a0a;
+      --mid:  #666;
+      --rule: #e0e0e0;
+      --white: #0a0a0a;
+      --black: #f5f5f5;
+    }
+    body.light nav {
+      background: rgba(245,245,245,0.9);
+      border-bottom-color: #e0e0e0;
+    }
+    body.light .spotlight { background: #000; }
+    body.light .cursor-dot { background: #000; }
+    body.light .polaroid {
+      box-shadow: 0 3px 18px rgba(0,0,0,0.08), 0 1px 5px rgba(0,0,0,0.05);
+    }
+    body.light .exp-row:hover { background: #ebebeb; }
+    body.light .tag { border-color: #d0d0d0; color: #666; }
+    body.light .cta-solid { background: #0a0a0a; color: #f5f5f5; }
+    body.light .cta-solid:hover { background: #333; }
+    body.light .cta-outline { border-color: #ccc; color: #666; }
+    body.light .cta-outline:hover { border-color: #888; color: #0a0a0a; }
+    body.light .type-cursor { background: #0a0a0a; }
+
     @media (max-width: 768px) {
       nav { padding: 0 24px; }
       .container { padding: 0 24px; }
@@ -421,6 +466,9 @@
     <a href="#">Projects</a>
     <a href="about.html" class="active">About</a>
   </div>
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+    <span class="toggle-icon">◐</span><span class="toggle-label">Light</span>
+  </button>
   <div class="nav-icons">
     <!-- LinkedIn -->
     <a href="https://www.linkedin.com/in/luna-zhiyue-wang/" target="_blank" aria-label="LinkedIn">
@@ -439,7 +487,7 @@
   <section class="hero">
     <div class="container">
       <div class="two-col">
-        <div class="hero-greeting fade-up">✦ &nbsp; Luna Wang &nbsp; ✦</div>
+        <div class="hero-greeting fade-up">✦ &nbsp;<span style="color:var(--white)">Luna Wang</span>&nbsp; ✦</div>
         <div class="hero-bio">
           <p class="bio-p1" id="typed-bio"></p>
           <p class="bio-p2 fade-up">
@@ -634,6 +682,20 @@
 </main>
 
 <script>
+  // ── Theme toggle ─────────────────────────────────────────────
+  (function() {
+    const btn = document.getElementById('theme-toggle');
+    const label = btn.querySelector('.toggle-label');
+    const icon = btn.querySelector('.toggle-icon');
+    let light = false;
+    btn.addEventListener('click', function() {
+      light = !light;
+      document.body.classList.toggle('light', light);
+      label.textContent = light ? 'Dark' : 'Light';
+      icon.textContent = light ? '◑' : '◐';
+    });
+  })();
+
   gsap.registerPlugin(ScrollTrigger);
 
   // ── Progress bar ─────────────────────────────────────────────
