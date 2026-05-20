@@ -92,38 +92,26 @@
       align-items: start;
     }
 
-    /* ─── SECTION LABEL ─────────────────────────────── */
-    .sec-label {
-      font-size: 16px;
-      font-weight: 300;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--mid);
-      padding-top: 4px;
-      position: sticky;
-      top: 72px;
-    }
-    .sec-label span { color: var(--white); }
-
     /* ─── HERO ──────────────────────────────────────── */
     .hero {
       padding: 80px 0;
     }
-    .hero-greeting {
-      font-size: 16px;
-      font-weight: 300;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--mid);
-      padding-top: 4px;
+    .hero-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 80px;
+      align-items: start;
     }
-    .hero-bio { }
+    .hero-left {}
+    .hero-right {
+      padding-top: 6px;
+    }
     .bio-p1 {
       font-size: clamp(20px, 2.4vw, 28px);
       font-weight: 500;
       line-height: 1.55;
       color: var(--ink);
-      margin-bottom: 32px;
+      margin-bottom: 36px;
       letter-spacing: -0.01em;
     }
     .bio-p2 {
@@ -131,7 +119,7 @@
       font-weight: 200;
       line-height: 1.85;
       color: #939393;
-      margin-bottom: 28px;
+      margin-bottom: 0;
     }
     .bio-p2 strong { font-weight: 400; color: #fff; }
 
@@ -233,7 +221,6 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 0;
-      padding-left: calc(200px + 64px);
     }
     .tool-item {
       display: flex;
@@ -440,8 +427,7 @@
     @media (max-width: 768px) {
       nav { padding: 0 24px; }
       .container { padding: 0 24px; }
-      .two-col { grid-template-columns: 1fr; gap: 24px 0; }
-      .sec-label { position: static; margin-bottom: 16px; }
+      .hero-split { grid-template-columns: 1fr; gap: 32px 0; }
       .exp-header { display: none; }
       .exp-row { grid-template-columns: 1fr; gap: 6px; }
       .exp-year { text-align: left; }
@@ -486,23 +472,20 @@
   <!-- ── HERO ─────────────────────────────── -->
   <section class="hero">
     <div class="container">
-      <div class="two-col">
-        <div class="hero-greeting fade-up">✦ &nbsp;<span style="color:var(--white)">Luna Wang</span>&nbsp; ✦</div>
-        <div class="hero-bio">
+      <div class="hero-split">
+        <div class="hero-left">
           <p class="bio-p1" id="typed-bio"></p>
-          <p class="bio-p2 fade-up">
+          <div class="hero-ctas fade-up">
+            <a href="resume.pdf" class="cta-solid" download>↓ &nbsp; Download Resume</a>
+            <a href="https://www.linkedin.com/in/luna-zhiyue-wang/" target="_blank" class="cta-outline">Connect Now &nbsp; →</a>
+          </div>
+        </div>
+        <div class="hero-right fade-up">
+          <p class="bio-p2">
             My work spans <strong>LLM-powered acquisition flows and agentic AI finance</strong> at Verizon Visa Card,
             <strong>AI and emerging technology products</strong> at Samsung,
             and <strong>e-commerce growth</strong> as co-founder and product lead at Cfierce.
           </p>
-          <div class="hero-ctas fade-up">
-            <a href="resume.pdf" class="cta-solid" download>
-              ↓ &nbsp; Download Resume
-            </a>
-            <a href="https://www.linkedin.com/in/luna-zhiyue-wang/" target="_blank" class="cta-outline">
-              Connect Now &nbsp; →
-            </a>
-          </div>
         </div>
       </div>
     </div>
@@ -511,43 +494,38 @@
   <!-- ── EXPERIENCE ─────────────────────── -->
   <section class="section-experience">
     <div class="container">
-      <div class="two-col">
-        <div class="sec-label">✦ &nbsp;<span>Experience</span>&nbsp; ✦</div>
-        <div>
-          <div class="exp-header fade-up">
-            <span>Role</span><span>Company</span><span>Focus</span><span style="text-align:right">Year</span>
-          </div>
-          <div class="exp-row fade-up">
-            <div class="exp-role">Senior Product Designer</div>
-            <div class="exp-company">Verizon Visa Card</div>
-            <div class="exp-tags"><span class="tag">Payment</span><span class="tag">Loyalty</span><span class="tag">AI</span></div>
-            <div class="exp-year">2025–26</div>
-          </div>
-          <div class="exp-row fade-up">
-            <div class="exp-role">Senior Product Designer</div>
-            <div class="exp-company">Delta Airlines</div>
-            <div class="exp-tags"><span class="tag">Travel</span><span class="tag">On-demand</span></div>
-            <div class="exp-year">2024</div>
-          </div>
-          <div class="exp-row fade-up">
-            <div class="exp-role">Product Designer</div>
-            <div class="exp-company">ADT Security System</div>
-            <div class="exp-tags"><span class="tag">B2B</span></div>
-            <div class="exp-year">2023</div>
-          </div>
-          <div class="exp-row fade-up">
-            <div class="exp-role">Product Designer</div>
-            <div class="exp-company">Samsung</div>
-            <div class="exp-tags"><span class="tag">AI</span><span class="tag">AR/VR</span></div>
-            <div class="exp-year">2022</div>
-          </div>
-          <div class="exp-row fade-up">
-            <div class="exp-role">Co-founder, Product Lead</div>
-            <div class="exp-company">Cfierce</div>
-            <div class="exp-tags"><span class="tag">Growth</span><span class="tag">Retail</span></div>
-            <div class="exp-year">2018–21</div>
-          </div>
-        </div>
+      <div class="exp-header fade-up">
+        <span>Role</span><span>Company</span><span>Focus</span><span style="text-align:right">Year</span>
+      </div>
+      <div class="exp-row fade-up">
+        <div class="exp-role">Senior Product Designer</div>
+        <div class="exp-company">Verizon Visa Card</div>
+        <div class="exp-tags"><span class="tag">Payment</span><span class="tag">Loyalty</span><span class="tag">AI</span></div>
+        <div class="exp-year">2025–26</div>
+      </div>
+      <div class="exp-row fade-up">
+        <div class="exp-role">Senior Product Designer</div>
+        <div class="exp-company">Delta Airlines</div>
+        <div class="exp-tags"><span class="tag">Travel</span><span class="tag">On-demand</span></div>
+        <div class="exp-year">2024</div>
+      </div>
+      <div class="exp-row fade-up">
+        <div class="exp-role">Product Designer</div>
+        <div class="exp-company">ADT Security System</div>
+        <div class="exp-tags"><span class="tag">B2B</span></div>
+        <div class="exp-year">2023</div>
+      </div>
+      <div class="exp-row fade-up">
+        <div class="exp-role">Product Designer</div>
+        <div class="exp-company">Samsung</div>
+        <div class="exp-tags"><span class="tag">AI</span><span class="tag">AR/VR</span></div>
+        <div class="exp-year">2022</div>
+      </div>
+      <div class="exp-row fade-up">
+        <div class="exp-role">Co-founder, Product Lead</div>
+        <div class="exp-company">Cfierce</div>
+        <div class="exp-tags"><span class="tag">Growth</span><span class="tag">Retail</span></div>
+        <div class="exp-year">2018–21</div>
       </div>
     </div>
   </section>
@@ -619,23 +597,20 @@
   <!-- ── EDUCATION ──────────────────────── -->
   <section class="section-education">
     <div class="container">
-      <div class="two-col">
-        <div class="sec-label">✦ &nbsp;<span>Education</span>&nbsp; ✦</div>
-        <div class="edu-grid">
+      <div class="edu-grid">
 
-          <div class="edu-card fade-up">
-            <div class="edu-card-year">2020 — 2021</div>
-            <div class="edu-card-school">University of California, Berkeley</div>
-            <div class="edu-card-degree">Human Computer Interaction</div>
-          </div>
-
-          <div class="edu-card fade-up">
-            <div class="edu-card-year">2016 — 2018</div>
-            <div class="edu-card-school">University of Edinburgh</div>
-            <div class="edu-card-degree">Architecture &amp; Landscape Architecture</div>
-          </div>
-
+        <div class="edu-card fade-up">
+          <div class="edu-card-year">2020 — 2021</div>
+          <div class="edu-card-school">University of California, Berkeley</div>
+          <div class="edu-card-degree">Human Computer Interaction</div>
         </div>
+
+        <div class="edu-card fade-up">
+          <div class="edu-card-year">2016 — 2018</div>
+          <div class="edu-card-school">University of Edinburgh</div>
+          <div class="edu-card-degree">Architecture &amp; Landscape Architecture</div>
+        </div>
+
       </div>
     </div>
   </section>
