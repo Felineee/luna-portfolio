@@ -133,6 +133,7 @@
       font-size: 11px; font-weight: 400;
       letter-spacing: 0.1em; text-transform: uppercase;
       text-decoration: none;
+      border-radius: 50px;
       transition: background 0.2s, opacity 0.2s;
     }
     .cta-solid:hover { background: #ddd; }
@@ -145,6 +146,7 @@
       font-size: 11px; font-weight: 300;
       letter-spacing: 0.1em; text-transform: uppercase;
       text-decoration: none;
+      border-radius: 50px;
       transition: border-color 0.2s, color 0.2s;
     }
     .cta-outline:hover { border-color: #666; color: var(--ink); }
@@ -342,7 +344,6 @@
       font-weight: 300;
       letter-spacing: 0.1em;
       color: var(--mid);
-      padding: 0 48px;
       margin-bottom: 0;
     }
     .polaroids-stage {
@@ -594,7 +595,7 @@
 
   <!-- ── POLAROIDS ─────────────────────────── -->
   <section class="section-polaroids">
-    <p class="polaroids-hint">Drag the Polaroids around ✦</p>
+    <div class="container"><p class="polaroids-hint">Drag the Polaroids around ✦</p></div>
     <div class="polaroids-stage" id="polaroids-stage">
 
       <div class="polaroid" id="pol-0">
@@ -657,16 +658,20 @@
     var target = document.getElementById('typed-bio');
     if (!target) return;
 
-    // Insert blinking cursor span
+    var fullText = 'Trained in interaction design and architecture, I bring a systems-level lens to product design — turning complex workflows into experiences that feel clear, scalable, and trustworthy.';
+
+    // Reserve full-text height so content below never shifts
+    target.textContent = fullText;
+    target.style.minHeight = target.offsetHeight + 'px';
+    target.textContent = '';
+
+    // Insert blinking cursor + text node
     var cursor = document.createElement('span');
     cursor.className = 'type-cursor';
     target.appendChild(cursor);
-
-    // Create a text node before the cursor
     var textNode = document.createTextNode('');
     target.insertBefore(textNode, cursor);
 
-    var fullText = 'Trained in interaction design and architecture, I bring a systems-level lens to product design — turning complex workflows into experiences that feel clear, scalable, and trustworthy.';
     var typed = '';
 
     function rand(a, b) { return (a + Math.random() * (b - a)) | 0; }
@@ -676,35 +681,31 @@
       for (var i = 0; i < fullText.length; i++) {
         var ch = fullText[i];
 
-        // ~2.5% chance: mistype then backspace (skip spaces and near end)
+        // ~2.5% chance: mistype then backspace
         if (Math.random() < 0.025 && ch !== ' ' && i < fullText.length - 8) {
-          // Type a neighbouring key
           var offset = Math.random() < 0.5 ? 1 : -1;
-          var badChar = String.fromCharCode(ch.charCodeAt(0) + offset);
-          textNode.nodeValue = typed + badChar;
-          await pause(rand(60, 180));
-          // Realise mistake — pause, then delete
-          if (Math.random() < 0.55) await pause(rand(140, 440));
-          textNode.nodeValue = typed;       // backspace
-          await pause(rand(70, 150));
-          if (Math.random() < 0.4) await pause(rand(180, 520));
+          textNode.nodeValue = typed + String.fromCharCode(ch.charCodeAt(0) + offset);
+          await pause(rand(30, 90));
+          if (Math.random() < 0.55) await pause(rand(70, 220));
+          textNode.nodeValue = typed;
+          await pause(rand(35, 75));
+          if (Math.random() < 0.4) await pause(rand(90, 260));
         }
 
-        // Per-character delay
+        // Per-character delay (2× faster than original)
         var ms;
-        if      (ch === ' ')                  ms = rand(38, 105);
-        else if (ch === ',' || ch === ';')    ms = rand(120, 300);
-        else if (ch === '.' || ch === '—') ms = rand(170, 420);
-        else                                  ms = rand(24, 90);
+        if      (ch === ' ')                ms = rand(19, 52);
+        else if (ch === ',' || ch === ';')  ms = rand(60, 150);
+        else if (ch === '.' || ch === '—')  ms = rand(85, 210);
+        else                                ms = rand(12, 45);
 
         // Random micro-hesitation (~3%)
-        if (Math.random() < 0.03) await pause(rand(380, 880));
+        if (Math.random() < 0.03) await pause(rand(190, 440));
 
         typed += ch;
         textNode.nodeValue = typed;
         await pause(ms);
       }
-      // Cursor keeps blinking — natural feel
     }
 
     setTimeout(run, 720);
@@ -803,7 +804,6 @@
   // ── Polaroids ─────────────────────────────────────────────────
   gsap.registerPlugin(Draggable);
 
-  // Scatter positions: [x%, y (px from top), rotation (deg)]
   var scatter = [
     { x: 0.04, y: 80,  r: -9  },
     { x: 0.16, y: 55,  r: -14 },
@@ -813,31 +813,76 @@
     { x: 0.73, y: 48,  r:  7  }
   ];
 
-  var pols   = document.querySelectorAll('.polaroid');
-  var stage  = document.getElementById('polaroids-stage');
-  var zTop   = 10;
+  var pols  = document.querySelectorAll('.polaroid');
+  var stage = document.getElementById('polaroids-stage');
+  var zTop  = 10;
+  var stageW = stage.offsetWidth;
 
   pols.forEach(function(el, i) {
-    var s = scatter[i] || { x: i * 0.15, y: 80, r: (i % 2 ? 1 : -1) * 8 };
-    var stageW = stage.offsetWidth;
-    gsap.set(el, {
-      x: stageW * s.x,
-      y: s.y,
-      rotation: s.r,
-      zIndex: i + 1
+    var s = scatter[i];
+
+    // Start stacked in center — scatter on scroll-in (plays once)
+    gsap.set(el, { x: stageW * 0.38 + (i - 2.5) * 6, y: 180, rotation: (i - 2.5) * 14, scale: 0.9, opacity: 0, zIndex: i + 1 });
+    gsap.to(el, {
+      x: stageW * s.x, y: s.y, rotation: s.r, scale: 1, opacity: 1,
+      duration: 1.0, ease: 'power3.out', delay: i * 0.07,
+      scrollTrigger: { trigger: '.section-polaroids', start: 'top 82%', toggleActions: 'play none none none' }
     });
 
+    var isDragging = false;
+    var prevX = 0, prevY = 0, velX = 0, velY = 0;
+
+    // ── 3D hover tilt ──
+    el.addEventListener('mousemove', function(e) {
+      if (isDragging) return;
+      var r = el.getBoundingClientRect();
+      var dx = (e.clientX - (r.left + r.width  * 0.5)) / (r.width  * 0.5);
+      var dy = (e.clientY - (r.top  + r.height * 0.5)) / (r.height * 0.5);
+      gsap.to(el, { rotateY: dx * 20, rotateX: -dy * 14, perspective: 700, duration: 0.25, ease: 'power2.out', overwrite: 'auto' });
+    });
+    el.addEventListener('mouseleave', function() {
+      if (isDragging) return;
+      gsap.to(el, { rotateX: 0, rotateY: 0, duration: 0.5, ease: 'power3.out', overwrite: 'auto' });
+    });
+
+    // ── Double-click to straighten ──
+    el.addEventListener('dblclick', function() {
+      zTop++;
+      gsap.set(el, { zIndex: zTop });
+      gsap.to(el, { rotation: 0, rotateX: 0, rotateY: 0, scale: 1, duration: 0.55, ease: 'back.out(2)' });
+    });
+
+    // ── Drag with throw momentum ──
     Draggable.create(el, {
       bounds: '#polaroids-stage',
       onPress: function() {
+        isDragging = false;
         zTop++;
-        gsap.set(this.target, { zIndex: zTop });
-        gsap.to(this.target, { scale: 1.04, duration: 0.15, ease: 'power2.out' });
-        this.target.classList.add('lifted');
+        gsap.set(el, { zIndex: zTop });
+        gsap.to(el, { scale: 1.06, rotateX: 0, rotateY: 0, duration: 0.15, ease: 'power2.out' });
+        el.classList.add('lifted');
+        prevX = this.x; prevY = this.y; velX = 0; velY = 0;
+      },
+      onDragStart: function() { isDragging = true; },
+      onDrag: function() {
+        velX = this.x - prevX;
+        velY = this.y - prevY;
+        prevX = this.x; prevY = this.y;
+        // Tilt follows drag direction
+        gsap.to(el, { rotation: s.r + gsap.utils.clamp(-18, 18, velX * 1.2), duration: 0.2, ease: 'none', overwrite: 'auto' });
       },
       onRelease: function() {
-        gsap.to(this.target, { scale: 1, duration: 0.25, ease: 'power2.out' });
-        this.target.classList.remove('lifted');
+        isDragging = false;
+        el.classList.remove('lifted');
+        var throwX = gsap.utils.clamp(-80, 80, velX * 7);
+        var throwY = gsap.utils.clamp(-80, 80, velY * 7);
+        var finalRot = s.r + gsap.utils.clamp(-12, 12, velX * 0.8);
+        gsap.to(el, {
+          x: '+=' + throwX, y: '+=' + throwY,
+          rotation: finalRot, rotateX: 0, rotateY: 0, scale: 1,
+          duration: 0.7, ease: 'power3.out', overwrite: 'auto'
+        });
+        velX = 0; velY = 0;
       }
     });
   });
