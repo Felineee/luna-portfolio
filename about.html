@@ -88,7 +88,6 @@
     /* ─── HERO ──────────────────────────────────────── */
     .hero {
       padding: 120px 0 100px;
-      border-bottom: 1px solid var(--rule);
     }
     .hero-greeting {
       font-size: 11px;
@@ -151,7 +150,6 @@
     /* ─── EXPERIENCE ─────────────────────────────────── */
     .section-experience {
       padding: 80px 0;
-      border-bottom: 1px solid var(--rule);
     }
     .exp-header {
       display: grid;
@@ -208,7 +206,6 @@
     /* ─── TOOLS ──────────────────────────────────────── */
     .section-tools {
       padding: 80px 0;
-      border-bottom: 1px solid var(--rule);
     }
     .tools-grid {
       display: grid;
@@ -264,12 +261,9 @@
       gap: 0 48px;
     }
     .edu-card {
-      border-top: 1px solid #222;
       padding: 36px 0 0;
       cursor: default;
-      transition: border-color 0.3s;
     }
-    .edu-card:hover { border-color: #555; }
     .edu-card-year {
       font-size: 10px;
       font-weight: 300;
@@ -306,16 +300,15 @@
     /* ─── SPOTLIGHT CURSOR ──────────────────────────── */
     .spotlight {
       position: fixed;
-      width: 320px; height: 320px;
+      width: 34px; height: 34px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.3) 45%, transparent 70%);
+      background: #fff;
       mix-blend-mode: difference;
       pointer-events: none;
       z-index: 9999;
-      left: -600px; top: -600px;
+      left: -100px; top: -100px;
       transform: translate(-50%, -50%);
       will-change: left, top;
-      transition: opacity 0.3s;
     }
 
     /* ─── TYPING CURSOR ─────────────────────────────── */
@@ -544,8 +537,8 @@
 
   // ── Spotlight cursor ──────────────────────────────────────────
   var spot = document.getElementById('spotlight');
-  var spotX = gsap.quickTo(spot, 'left', { duration: 0.55, ease: 'power3.out' });
-  var spotY = gsap.quickTo(spot, 'top',  { duration: 0.55, ease: 'power3.out' });
+  var spotX = gsap.quickTo(spot, 'left', { duration: 0.35, ease: 'power2.out' });
+  var spotY = gsap.quickTo(spot, 'top',  { duration: 0.35, ease: 'power2.out' });
   window.addEventListener('mousemove', function(e) {
     spotX(e.clientX);
     spotY(e.clientY);
@@ -634,7 +627,7 @@
         scrollTrigger: {
           trigger: expRows[0],
           start: 'top 84%',
-          toggleActions: 'play none none none'
+          toggleActions: 'play none play reverse'
         }
       }
     );
@@ -651,7 +644,7 @@
         scrollTrigger: {
           trigger: '.tools-grid',
           start: 'top 82%',
-          toggleActions: 'play none none none'
+          toggleActions: 'play none play reverse'
         }
       }
     );
@@ -668,7 +661,7 @@
         scrollTrigger: {
           trigger: '.edu-grid',
           start: 'top 82%',
-          toggleActions: 'play none none none'
+          toggleActions: 'play none play reverse'
         }
       }
     );
@@ -680,7 +673,7 @@
       { x: -32, opacity: 0 },
       { x: 0, opacity: 1,
         duration: 0.9, ease: 'power3.out',
-        scrollTrigger: { trigger: el, start: 'top 86%' }
+        scrollTrigger: { trigger: el, start: 'top 86%', toggleActions: 'play none play reverse' }
       }
     );
   });
