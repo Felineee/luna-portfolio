@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About — Luna Wang</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <style>
@@ -13,10 +13,12 @@
     :root {
       --black: #000;
       --white: #fff;
-      --ink:   #111;
-      --mid:   #888;
-      --rule:  #e5e5e5;
-      --font:  -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+      --bg:    #0a0a0a;
+      --ink:   #f0f0f0;
+      --mid:   #666;
+      --dim:   #333;
+      --rule:  #1e1e1e;
+      --font:  'Poppins', sans-serif;
       --max:   1100px;
     }
 
@@ -24,7 +26,7 @@
 
     body {
       font-family: var(--font);
-      background: var(--white);
+      background: var(--bg);
       color: var(--ink);
       -webkit-font-smoothing: antialiased;
     }
@@ -37,20 +39,20 @@
       padding: 0 48px;
       height: 56px;
       border-bottom: 1px solid var(--rule);
-      background: rgba(255,255,255,0.88);
+      background: rgba(10,10,10,0.88);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
     }
     .nav-links { display: flex; gap: 40px; }
     .nav-links a {
-      font-size: 12px; font-weight: 400;
+      font-size: 12px; font-weight: 300;
       letter-spacing: 0.1em; text-transform: uppercase;
       text-decoration: none; color: var(--mid);
       transition: color 0.2s;
     }
-    .nav-links a:hover, .nav-links a.active { color: var(--black); }
+    .nav-links a:hover, .nav-links a.active { color: var(--white); }
     .nav-icons { display: flex; gap: 16px; align-items: center; }
-    .nav-icons a { display: flex; color: var(--black); text-decoration: none; opacity: 0.6; transition: opacity 0.2s; }
+    .nav-icons a { display: flex; color: var(--white); text-decoration: none; opacity: 0.4; transition: opacity 0.2s; }
     .nav-icons a:hover { opacity: 1; }
     .nav-icons svg { width: 18px; height: 18px; }
 
@@ -73,7 +75,7 @@
     /* ─── SECTION LABEL ─────────────────────────────── */
     .sec-label {
       font-size: 11px;
-      font-weight: 400;
+      font-weight: 300;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--mid);
@@ -81,7 +83,7 @@
       position: sticky;
       top: 72px;
     }
-    .sec-label span { color: var(--black); }
+    .sec-label span { color: var(--white); }
 
     /* ─── HERO ──────────────────────────────────────── */
     .hero {
@@ -102,18 +104,18 @@
     .bio-p1 {
       font-size: clamp(22px, 2.8vw, 32px);
       font-weight: 300;
-      line-height: 1.45;
+      line-height: 1.5;
       color: var(--ink);
       margin-bottom: 36px;
       letter-spacing: -0.01em;
     }
     .bio-p2 {
       font-size: clamp(15px, 1.6vw, 18px);
-      font-weight: 300;
-      line-height: 1.75;
+      font-weight: 200;
+      line-height: 1.8;
       color: #555;
     }
-    .bio-p2 strong { font-weight: 500; color: var(--ink); }
+    .bio-p2 strong { font-weight: 400; color: #aaa; }
 
     /* ─── EXPERIENCE ─────────────────────────────────── */
     .section-experience {
@@ -129,10 +131,10 @@
     }
     .exp-header span {
       font-size: 10px;
-      font-weight: 400;
+      font-weight: 300;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: #bbb;
+      color: #333;
     }
     .exp-row {
       display: grid;
@@ -144,15 +146,15 @@
       transition: background 0.2s;
       border-radius: 2px;
     }
-    .exp-row:hover { background: #fafafa; }
+    .exp-row:hover { background: #111; }
     .exp-role {
       font-size: 14px;
-      font-weight: 400;
+      font-weight: 300;
       color: var(--ink);
     }
     .exp-company {
       font-size: 14px;
-      font-weight: 300;
+      font-weight: 200;
       color: var(--mid);
     }
     .exp-tags { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -161,14 +163,14 @@
       font-weight: 300;
       letter-spacing: 0.03em;
       color: #555;
-      border: 1px solid #d8d8d8;
+      border: 1px solid #2a2a2a;
       border-radius: 100px;
       padding: 3px 10px;
     }
     .exp-year {
       font-size: 13px;
-      font-weight: 300;
-      color: #aaa;
+      font-weight: 200;
+      color: #444;
       text-align: right;
     }
 
@@ -199,27 +201,28 @@
     .tool-logo img {
       width: 22px; height: 22px;
       object-fit: contain;
-      filter: grayscale(1);
-      transition: filter 0.25s, opacity 0.25s;
-      opacity: 0.7;
+      filter: none;
+      transition: opacity 0.25s;
+      opacity: 0.35;
     }
-    .tool-item:hover .tool-logo img { filter: none; opacity: 1; }
+    .tool-item:hover .tool-logo img { opacity: 1; }
     .tool-logo-letter {
       width: 22px; height: 22px;
-      border: 1.5px solid #ccc;
+      border: 1.5px solid #333;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 10px; font-weight: 500;
-      color: #888;
+      font-size: 10px; font-weight: 400;
+      color: #555;
       transition: border-color 0.25s, color 0.25s;
     }
-    .tool-item:hover .tool-logo-letter { border-color: var(--black); color: var(--black); }
+    .tool-item:hover .tool-logo-letter { border-color: var(--white); color: var(--white); }
     .tool-name {
       font-size: 13px;
       font-weight: 300;
-      color: var(--ink);
-      transition: color 0.2s;
+      color: #555;
+      transition: color 0.25s;
     }
+    .tool-item:hover .tool-name { color: var(--ink); }
 
     /* ─── EDUCATION ──────────────────────────────────── */
     .section-education {
@@ -235,18 +238,18 @@
     .edu-row:first-child { border-top: 1px solid var(--rule); }
     .edu-degree {
       font-size: 14px;
-      font-weight: 400;
+      font-weight: 300;
       color: var(--ink);
     }
     .edu-school {
       font-size: 14px;
-      font-weight: 300;
+      font-weight: 200;
       color: var(--mid);
     }
     .edu-year {
       font-size: 13px;
-      font-weight: 300;
-      color: #aaa;
+      font-weight: 200;
+      color: #444;
       text-align: right;
     }
 
@@ -255,7 +258,7 @@
       position: fixed;
       top: 56px; left: 0;
       height: 1px;
-      background: var(--black);
+      background: var(--white);
       width: 0%;
       z-index: 200;
       transition: width 0.05s linear;
@@ -380,53 +383,53 @@
         <div class="tools-grid">
 
           <div class="tool-item fade-up">
-            <div class="tool-logo"><img src="https://cdn.simpleicons.org/figma/000000" alt="Figma" loading="lazy"></div>
+            <div class="tool-logo"><img src="https://cdn.simpleicons.org/figma/ffffff" alt="Figma" loading="lazy"></div>
             <span class="tool-name">Figma</span>
           </div>
           <div class="tool-item fade-up">
-            <div class="tool-logo"><img src="https://cdn.simpleicons.org/figma/000000" alt="Figma Make" loading="lazy"></div>
+            <div class="tool-logo"><img src="https://cdn.simpleicons.org/figma/ffffff" alt="Figma Make" loading="lazy"></div>
             <span class="tool-name">Figma Make</span>
           </div>
           <div class="tool-item fade-up">
             <div class="tool-logo">
               <!-- Lovable custom mark -->
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z" fill="#000" opacity="0.75"/>
+                <path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z" fill="#fff" opacity="0.35"/>
               </svg>
             </div>
             <span class="tool-name">Lovable</span>
           </div>
 
           <div class="tool-item fade-up">
-            <div class="tool-logo"><img src="https://cdn.simpleicons.org/anthropic/000000" alt="Claude" loading="lazy"></div>
+            <div class="tool-logo"><img src="https://cdn.simpleicons.org/anthropic/ffffff" alt="Claude" loading="lazy"></div>
             <span class="tool-name">Claude Code</span>
           </div>
           <div class="tool-item fade-up">
             <div class="tool-logo">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                <rect x="2" y="3" width="20" height="14" rx="2" stroke="#000" stroke-width="1.5"/>
-                <path d="M8 21h8M12 17v4" stroke="#000" stroke-width="1.5" stroke-linecap="round"/>
-                <circle cx="8" cy="10" r="2.5" fill="#000" opacity="0.7"/>
-                <path d="M13 8.5h4M13 11.5h3" stroke="#000" stroke-width="1.3" stroke-linecap="round" opacity="0.5"/>
+                <rect x="2" y="3" width="20" height="14" rx="2" stroke="#fff" stroke-width="1.5" opacity="0.35"/>
+                <path d="M8 21h8M12 17v4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity="0.35"/>
+                <circle cx="8" cy="10" r="2.5" fill="#fff" opacity="0.35"/>
+                <path d="M13 8.5h4M13 11.5h3" stroke="#fff" stroke-width="1.3" stroke-linecap="round" opacity="0.25"/>
               </svg>
             </div>
             <span class="tool-name">UserTesting</span>
           </div>
           <div class="tool-item fade-up">
-            <div class="tool-logo"><img src="https://cdn.simpleicons.org/jira/000000" alt="Jira" loading="lazy"></div>
+            <div class="tool-logo"><img src="https://cdn.simpleicons.org/jira/ffffff" alt="Jira" loading="lazy"></div>
             <span class="tool-name">Jira</span>
           </div>
 
           <div class="tool-item fade-up">
-            <div class="tool-logo"><img src="https://cdn.simpleicons.org/adobephotoshop/000000" alt="Photoshop" loading="lazy"></div>
+            <div class="tool-logo"><img src="https://cdn.simpleicons.org/adobephotoshop/ffffff" alt="Photoshop" loading="lazy"></div>
             <span class="tool-name">Photoshop</span>
           </div>
           <div class="tool-item fade-up">
-            <div class="tool-logo"><img src="https://cdn.simpleicons.org/adobeillustrator/000000" alt="Illustrator" loading="lazy"></div>
+            <div class="tool-logo"><img src="https://cdn.simpleicons.org/adobeillustrator/ffffff" alt="Illustrator" loading="lazy"></div>
             <span class="tool-name">Illustrator</span>
           </div>
           <div class="tool-item fade-up">
-            <div class="tool-logo"><img src="https://cdn.simpleicons.org/adobeaftereffects/000000" alt="After Effects" loading="lazy"></div>
+            <div class="tool-logo"><img src="https://cdn.simpleicons.org/adobeaftereffects/ffffff" alt="After Effects" loading="lazy"></div>
             <span class="tool-name">After Effects</span>
           </div>
 
