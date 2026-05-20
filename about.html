@@ -92,30 +92,61 @@
     }
     .hero-greeting {
       font-size: 11px;
-      font-weight: 400;
+      font-weight: 300;
       letter-spacing: 0.22em;
       text-transform: uppercase;
       color: var(--mid);
-      margin-bottom: 40px;
+      padding-top: 4px;
     }
-    .hero-bio {
-      max-width: 780px;
-    }
+    .hero-bio { }
     .bio-p1 {
-      font-size: clamp(22px, 2.8vw, 32px);
+      font-size: clamp(20px, 2.4vw, 28px);
       font-weight: 300;
-      line-height: 1.5;
+      line-height: 1.55;
       color: var(--ink);
-      margin-bottom: 36px;
+      margin-bottom: 32px;
       letter-spacing: -0.01em;
     }
     .bio-p2 {
-      font-size: clamp(15px, 1.6vw, 18px);
+      font-size: clamp(14px, 1.4vw, 16px);
       font-weight: 200;
-      line-height: 1.8;
+      line-height: 1.85;
       color: #555;
+      margin-bottom: 48px;
     }
-    .bio-p2 strong { font-weight: 400; color: #aaa; }
+    .bio-p2 strong { font-weight: 400; color: #888; }
+
+    /* ─── CTAs ───────────────────────────────────────── */
+    .hero-ctas {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .cta-solid {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 26px;
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--font);
+      font-size: 11px; font-weight: 400;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.2s, opacity 0.2s;
+    }
+    .cta-solid:hover { background: #ddd; }
+    .cta-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 26px;
+      border: 1px solid #2a2a2a;
+      color: #555;
+      font-family: var(--font);
+      font-size: 11px; font-weight: 300;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .cta-outline:hover { border-color: #666; color: var(--ink); }
 
     /* ─── EXPERIENCE ─────────────────────────────────── */
     .section-experience {
@@ -228,29 +259,38 @@
     .section-education {
       padding: 80px 0 120px;
     }
-    .edu-row {
+    .edu-grid {
       display: grid;
-      grid-template-columns: 2fr 1.6fr 100px;
-      padding: 20px 0;
-      border-bottom: 1px solid var(--rule);
-      align-items: center;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 48px;
     }
-    .edu-row:first-child { border-top: 1px solid var(--rule); }
-    .edu-degree {
-      font-size: 14px;
+    .edu-card {
+      border-top: 1px solid #222;
+      padding: 36px 0 0;
+      cursor: default;
+      transition: border-color 0.3s;
+    }
+    .edu-card:hover { border-color: #555; }
+    .edu-card-year {
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #333;
+      margin-bottom: 24px;
+    }
+    .edu-card-school {
+      font-size: clamp(16px, 1.6vw, 20px);
       font-weight: 300;
       color: var(--ink);
+      line-height: 1.35;
+      margin-bottom: 10px;
     }
-    .edu-school {
-      font-size: 14px;
-      font-weight: 200;
-      color: var(--mid);
-    }
-    .edu-year {
+    .edu-card-degree {
       font-size: 13px;
       font-weight: 200;
       color: #444;
-      text-align: right;
+      line-height: 1.6;
     }
 
     /* ─── SCROLL PROGRESS ───────────────────────────── */
@@ -277,8 +317,8 @@
       .exp-row { grid-template-columns: 1fr; gap: 6px; }
       .exp-year { text-align: left; }
       .tools-grid { grid-template-columns: repeat(2, 1fr); }
-      .edu-row { grid-template-columns: 1fr 80px; }
-      .edu-school { display: none; }
+      .edu-grid { grid-template-columns: 1fr; gap: 32px 0; }
+      .hero-ctas { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
@@ -311,16 +351,26 @@
   <!-- ── HERO ─────────────────────────────── -->
   <section class="hero">
     <div class="container">
-      <p class="hero-greeting fade-up">✦ &nbsp; Luna Wang &nbsp; ✦</p>
-      <div class="hero-bio">
-        <p class="bio-p1 fade-up">
-          Trained in interaction design and architecture, I bring a systems-level lens to product design — turning complex workflows into experiences that feel clear, scalable, and trustworthy.
-        </p>
-        <p class="bio-p2 fade-up">
-          My work spans <strong>LLM-powered acquisition flows and agentic AI finance</strong> experiences at Verizon Visa Card,
-          <strong>AI and emerging technology products</strong> at Samsung,
-          and <strong>e-commerce growth</strong> as co-founder and product lead at Cfierce.
-        </p>
+      <div class="two-col">
+        <div class="hero-greeting fade-up">✦ &nbsp; Luna Wang &nbsp; ✦</div>
+        <div class="hero-bio">
+          <p class="bio-p1 fade-up">
+            Trained in interaction design and architecture, I bring a systems-level lens to product design — turning complex workflows into experiences that feel clear, scalable, and trustworthy.
+          </p>
+          <p class="bio-p2 fade-up">
+            My work spans <strong>LLM-powered acquisition flows and agentic AI finance</strong> at Verizon Visa Card,
+            <strong>AI and emerging technology products</strong> at Samsung,
+            and <strong>e-commerce growth</strong> as co-founder and product lead at Cfierce.
+          </p>
+          <div class="hero-ctas fade-up">
+            <a href="resume.pdf" class="cta-solid" download>
+              ↓ &nbsp; Download Resume
+            </a>
+            <a href="https://www.linkedin.com/in/luna-zhiyue-wang/" target="_blank" class="cta-outline">
+              Connect Now &nbsp; →
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -345,12 +395,6 @@
             <div class="exp-company">Delta Airlines</div>
             <div class="exp-tags"><span class="tag">Travel</span><span class="tag">On-demand</span></div>
             <div class="exp-year">2024</div>
-          </div>
-          <div class="exp-row fade-up">
-            <div class="exp-role">Product Designer</div>
-            <div class="exp-company">Aeromexico</div>
-            <div class="exp-tags"><span class="tag">Travel &amp; Hospitality</span></div>
-            <div class="exp-year">2023</div>
           </div>
           <div class="exp-row fade-up">
             <div class="exp-role">Product Designer</div>
@@ -443,17 +487,20 @@
     <div class="container">
       <div class="two-col">
         <div class="sec-label">✦ &nbsp;<span>Education</span>&nbsp; ✦</div>
-        <div>
-          <div class="edu-row fade-up">
-            <div class="edu-degree">Human Computer Interaction</div>
-            <div class="edu-school">University of California, Berkeley</div>
-            <div class="edu-year">2020–21</div>
+        <div class="edu-grid">
+
+          <div class="edu-card fade-up">
+            <div class="edu-card-year">2020 — 2021</div>
+            <div class="edu-card-school">University of California, Berkeley</div>
+            <div class="edu-card-degree">Human Computer Interaction</div>
           </div>
-          <div class="edu-row fade-up">
-            <div class="edu-degree">Architecture, Landscape Architecture</div>
-            <div class="edu-school">University of Edinburgh</div>
-            <div class="edu-year">2016–18</div>
+
+          <div class="edu-card fade-up">
+            <div class="edu-card-year">2016 — 2018</div>
+            <div class="edu-card-school">University of Edinburgh</div>
+            <div class="edu-card-degree">Architecture &amp; Landscape Architecture</div>
           </div>
+
         </div>
       </div>
     </div>
