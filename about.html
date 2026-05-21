@@ -159,7 +159,7 @@
 
     /* ─── EXPERIENCE ─────────────────────────────────── */
     .section-experience {
-      padding: 52px 0;
+      padding: 80px 0;
     }
     .exp-header {
       display: grid;
@@ -187,27 +187,27 @@
     }
     .exp-row:hover { background: #111; }
     .exp-role {
-      font-size: 16px;
+      font-size: 13px;
       font-weight: 300;
       color: var(--ink);
     }
     .exp-company {
-      font-size: 16px;
+      font-size: 13px;
       font-weight: 200;
       color: var(--mid);
     }
-    .exp-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .exp-tags { display: flex; flex-wrap: wrap; gap: 5px; }
     .tag {
-      font-size: 16px;
+      font-size: 11px;
       font-weight: 300;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.04em;
       color: #939393;
       border: 1px solid #2a2a2a;
       border-radius: 100px;
-      padding: 3px 10px;
+      padding: 2px 9px;
     }
     .exp-year {
-      font-size: 16px;
+      font-size: 13px;
       font-weight: 200;
       color: #939393;
       text-align: right;
@@ -215,19 +215,22 @@
 
     /* ─── TOOLS ──────────────────────────────────────── */
     .section-tools {
-      padding: 52px 0;
+      padding: 80px 0;
     }
     .tools-grid {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
       gap: 0;
+      justify-items: center;
     }
     .tool-item {
       display: flex;
       align-items: center;
-      gap: 16px;
-      padding: 24px 12px;
+      gap: 12px;
+      padding: 22px 0;
       cursor: default;
+      width: 100%;
+      justify-content: center;
     }
     .app-icon {
       flex-shrink: 0;
@@ -235,9 +238,8 @@
       transition: transform 0.22s ease;
     }
     .app-icon img {
-      width: auto; height: 36px;
+      width: auto; height: 18px;
       object-fit: contain;
-      border-radius: 8px;
       display: block;
     }
     .tool-item:hover .app-icon { transform: scale(1.12); }
@@ -341,7 +343,7 @@
     /* ─── POLAROIDS ─────────────────────────────────── */
     .section-polaroids {
       background: var(--bg);
-      padding: 52px 0;
+      padding: 80px 0;
       overflow: hidden;
     }
     .polaroids-hint {
@@ -756,7 +758,7 @@
       stagger: 0.08,
       scrollTrigger: {
         trigger: '.section-experience',
-        start: 'top 82%',
+        start: 'top 58%',
         toggleActions: 'play none play reverse'
       }
     }
@@ -772,7 +774,7 @@
         stagger: 0.07,
         scrollTrigger: {
           trigger: '.tools-grid',
-          start: 'top 82%',
+          start: 'top 58%',
           toggleActions: 'play none play reverse'
         }
       }
@@ -816,7 +818,7 @@
     gsap.to(el, {
       x: stageW * s.x, y: s.y, rotation: s.r, scale: 1, opacity: 1,
       duration: 1.0, ease: 'power3.out', delay: i * 0.07,
-      scrollTrigger: { trigger: '.section-polaroids', start: 'top 82%', toggleActions: 'play none play reverse' }
+      scrollTrigger: { trigger: '.section-polaroids', start: 'top 58%', toggleActions: 'play none play reverse' }
     });
 
     var isDragging = false;
