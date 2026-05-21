@@ -107,7 +107,7 @@
       padding-top: 6px;
     }
     .bio-p1 {
-      font-size: clamp(20px, 2.4vw, 28px);
+      font-size: clamp(26px, 3vw, 34px);
       font-weight: 500;
       line-height: 1.55;
       color: var(--ink);
@@ -676,12 +676,13 @@
     var target = document.getElementById('typed-bio');
     if (!target) return;
 
-    var fullText = 'Trained in interaction design and architecture, I bring a systems-level lens to product design — turning complex workflows into experiences that feel clear, scalable, and trustworthy.';
+    var fullText = 'With training in interaction design@UC Berkeley and architecture@University of Edinburgh, I bring a systems-level lens to product design, turning complex workflows into experiences that feel clear, scalable, and trustworthy.';
 
     function startTyping() {
       // Reserve height first so layout never shifts during typing
       target.textContent = fullText;
-      target.style.minHeight = target.offsetHeight + 'px';
+      var lh = parseFloat(window.getComputedStyle(target).lineHeight) || 40;
+      target.style.minHeight = (target.offsetHeight + lh) + 'px';
       target.textContent = '';
 
       // Insert blinking cursor + text node
@@ -752,10 +753,10 @@
 
   var expAll = expRows;
   gsap.fromTo(expAll,
-    { opacity: 0, y: 56, scale: 0.97 },
+    { opacity: 0, y: 32, scale: 0.98 },
     { opacity: 1, y: 0, scale: 1,
-      duration: 0.95, ease: 'power3.out',
-      stagger: 0.08,
+      duration: 0.45, ease: 'power2.out',
+      stagger: 0.04,
       scrollTrigger: {
         trigger: '.section-experience',
         start: 'top 58%',
@@ -768,10 +769,10 @@
   var toolItems = gsap.utils.toArray('.tool-item');
   if (toolItems.length) {
     gsap.fromTo(toolItems,
-      { opacity: 0, y: 50, scale: 0.91 },
+      { opacity: 0, y: 28, scale: 0.95 },
       { opacity: 1, y: 0, scale: 1,
-        duration: 0.85, ease: 'power3.out',
-        stagger: 0.07,
+        duration: 0.4, ease: 'power2.out',
+        stagger: 0.03,
         scrollTrigger: {
           trigger: '.tools-grid',
           start: 'top 58%',
