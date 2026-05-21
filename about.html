@@ -219,7 +219,7 @@
     }
     .tools-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(6, 1fr);
       gap: 0;
     }
     .tool-item {
@@ -230,17 +230,15 @@
       cursor: default;
     }
     .app-icon {
-      width: 36px; height: 36px;
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
-      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
       transition: transform 0.22s ease;
     }
     .app-icon img {
-      width: 44px; height: 44px;
-      object-fit: cover;
-      border-radius: 11px;
+      width: auto; height: 36px;
+      object-fit: contain;
+      border-radius: 8px;
+      display: block;
     }
     .tool-item:hover .app-icon { transform: scale(1.12); }
     .tool-name {
@@ -401,17 +399,23 @@
 
     /* ─── LIGHT THEME ──────────────────────────── */
     body.light {
-      --bg:   #f5f5f5;
-      --ink:  #0a0a0a;
-      --mid:  #666;
-      --rule: #e0e0e0;
+      --bg:    #ffffff;
+      --ink:   #0a0a0a;
+      --mid:   #666;
+      --rule:  #e0e0e0;
       --white: #0a0a0a;
-      --black: #f5f5f5;
+      --black: #ffffff;
     }
     body.light nav {
-      background: rgba(245,245,245,0.9);
+      background: rgba(255,255,255,0.92);
       border-bottom-color: #e0e0e0;
     }
+    body.light .bio-p2 strong { color: #0a0a0a; }
+    body.light .bio-p1 { color: #0a0a0a; }
+    body.light .exp-role { color: #0a0a0a; }
+    body.light .nav-links a { color: #666; }
+    body.light .nav-links a:hover, body.light .nav-links a.active { color: #0a0a0a; }
+    body.light .nav-icons a { color: #0a0a0a; }
     body.light .spotlight { background: #000; }
     body.light .cursor-dot { background: #000; }
     body.light .polaroid {
@@ -495,9 +499,7 @@
   <!-- ── EXPERIENCE ─────────────────────── -->
   <section class="section-experience">
     <div class="container">
-      <div class="exp-header fade-up">
-        <span>Role</span><span>Company</span><span>Focus</span><span style="text-align:right">Year</span>
-      </div>
+
       <div class="exp-row fade-up">
         <div class="exp-role">Senior Product Designer</div>
         <div class="exp-company">Verizon Visa Card</div>
@@ -591,31 +593,11 @@
     </div>
   </section>
 
-  <!-- ── EDUCATION ──────────────────────── -->
-  <section class="section-education">
-    <div class="container">
-      <div class="edu-grid">
-
-        <div class="edu-card fade-up">
-          <div class="edu-card-year">2020 — 2021</div>
-          <div class="edu-card-school">University of California, Berkeley</div>
-          <div class="edu-card-degree">Human Computer Interaction</div>
-        </div>
-
-        <div class="edu-card fade-up">
-          <div class="edu-card-year">2016 — 2018</div>
-          <div class="edu-card-school">University of Edinburgh</div>
-          <div class="edu-card-degree">Architecture &amp; Landscape Architecture</div>
-        </div>
-
-      </div>
-    </div>
-  </section>
 
 
   <!-- ── POLAROIDS ─────────────────────────── -->
   <section class="section-polaroids">
-    <div class="container"><p class="polaroids-hint">Drag the Polaroids around ✦</p></div>
+    <div class="container"><p class="polaroids-hint">Playground</p></div>
     <div class="polaroids-stage" id="polaroids-stage">
 
       <div class="polaroid" id="pol-0">
@@ -694,10 +676,17 @@
 
     var fullText = 'Trained in interaction design and architecture, I bring a systems-level lens to product design — turning complex workflows into experiences that feel clear, scalable, and trustworthy.';
 
-    // Reserve full-text height so content below never shifts
-    target.textContent = fullText;
-    target.style.minHeight = target.offsetHeight + 'px';
-    target.textContent = '';
+    // Reserve full-text height after fonts load so layout is stable
+    function reserveHeight() {
+      target.textContent = fullText;
+      target.style.minHeight = target.offsetHeight + 'px';
+      target.textContent = '';
+    }
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(reserveHeight);
+    } else {
+      reserveHeight();
+    }
 
     // Insert blinking cursor + text node
     var cursor = document.createElement('span');
@@ -759,11 +748,9 @@
   });
 
   // ── Experience section — everything hidden until scroll ──────
-  var expHeader = document.querySelector('.exp-header');
   var expRows = gsap.utils.toArray('.exp-row');
-  gsap.set(expHeader, { opacity: 0, y: 40 });
 
-  var expAll = [expHeader].concat(expRows);
+  var expAll = expRows;
   gsap.fromTo(expAll,
     { opacity: 0, y: 56, scale: 0.97 },
     { opacity: 1, y: 0, scale: 1,
@@ -794,22 +781,6 @@
     );
   }
 
-  // ── Education cards ───────────────────────────────────────────
-  var eduCards = gsap.utils.toArray('.edu-card');
-  if (eduCards.length) {
-    gsap.fromTo(eduCards,
-      { opacity: 0, y: 58, scale: 0.95 },
-      { opacity: 1, y: 0, scale: 1,
-        duration: 1.0, ease: 'power3.out',
-        stagger: 0.2,
-        scrollTrigger: {
-          trigger: '.edu-grid',
-          start: 'top 82%',
-          toggleActions: 'play none play reverse'
-        }
-      }
-    );
-  }
 
 
   // ── Tool hover lift ───────────────────────────────────────────
@@ -847,7 +818,7 @@
     gsap.to(el, {
       x: stageW * s.x, y: s.y, rotation: s.r, scale: 1, opacity: 1,
       duration: 1.0, ease: 'power3.out', delay: i * 0.07,
-      scrollTrigger: { trigger: '.section-polaroids', start: 'top 82%', toggleActions: 'play none none none' }
+      scrollTrigger: { trigger: '.section-polaroids', start: 'top 82%', toggleActions: 'play none play reverse' }
     });
 
     var isDragging = false;
