@@ -84,28 +84,30 @@
       margin-top: 36px;
     }
     .cta-solid {
-      display: flex; align-items: center; justify-content: center; gap: 8px;
+      display: flex; align-items: center; justify-content: center;
       flex: 1;
-      padding: 14px 26px;
+      height: 22px;
+      padding: 0 16px;
       background: var(--white);
       color: var(--black);
       font-family: var(--font);
       font-size: 16px; font-weight: 400;
-      letter-spacing: 0.1em; text-transform: uppercase;
+      letter-spacing: 0; text-transform: none;
       text-decoration: none;
       border-radius: 50px;
       transition: background 0.2s, opacity 0.2s;
     }
     .cta-solid:hover { background: #333; color: #fff; }
     .cta-outline {
-      display: flex; align-items: center; justify-content: center; gap: 8px;
+      display: flex; align-items: center; justify-content: center;
       flex: 1;
-      padding: 14px 26px;
+      height: 22px;
+      padding: 0 16px;
       border: 1px solid #ccc;
       color: #666;
       font-family: var(--font);
-      font-size: 16px; font-weight: 300;
-      letter-spacing: 0.1em; text-transform: uppercase;
+      font-size: 16px; font-weight: 400;
+      letter-spacing: 0; text-transform: none;
       text-decoration: none;
       border-radius: 50px;
       transition: border-color 0.2s, color 0.2s;
@@ -176,16 +178,15 @@
       display: grid;
       grid-template-columns: repeat(6, 1fr);
       gap: 0;
-      justify-items: center;
+      justify-items: start;
     }
     .tool-item {
       display: flex;
-      align-items: center;
-      gap: 12px;
+      align-items: flex-start;
+      gap: 6px;
       padding: 22px 0;
       cursor: default;
-      width: 100%;
-      justify-content: center;
+      width: 200px;
     }
     .app-icon {
       flex-shrink: 0;
@@ -293,8 +294,8 @@
         </div>
       </div>
       <div class="hero-ctas">
-        <a href="resume.pdf" class="cta-solid" download>↓ &nbsp; Download Resume</a>
-        <a href="https://www.linkedin.com/in/luna-zhiyue-wang/" target="_blank" class="cta-outline">Connect Now &nbsp; →</a>
+        <a href="resume.pdf" class="cta-solid" download>Download resume</a>
+        <a href="https://www.linkedin.com/in/luna-zhiyue-wang/" target="_blank" class="cta-outline">Connect now</a>
       </div>
     </div>
   </section>
