@@ -252,6 +252,28 @@
     }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
+    /* ─── SPOTLIGHT + CURSOR ────────────────────────── */
+    .spotlight {
+      position: fixed;
+      width: 240px; height: 240px;
+      background: radial-gradient(circle, rgba(255,255,255,0.08), transparent);
+      border-radius: 50%;
+      pointer-events: none;
+      mix-blend-mode: difference;
+      top: 0; left: 0;
+      z-index: 9998;
+    }
+    .cursor-dot {
+      position: fixed;
+      width: 6px; height: 6px;
+      background: #0a0a0a;
+      border-radius: 50%;
+      pointer-events: none;
+      top: 0; left: 0;
+      z-index: 9999;
+      transform: translate(-3px, -3px);
+    }
+
     /* ─── INIT STATES ───────────────────────────────── */
     .fade-up { opacity: 0; transform: translateY(40px); }
 
@@ -273,6 +295,9 @@
 </head>
 <body>
 
+<!-- Spotlight + dot cursor -->
+<div class="spotlight" id="spotlight"></div>
+<div class="cursor-dot" id="cursor-dot"></div>
 
 <main>
 
@@ -464,6 +489,17 @@
       startTyping();
     }
   })();
+
+  // ── Spotlight + dot cursor ────────────────────────────────────
+  var spot = document.getElementById('spotlight');
+  var dot  = document.getElementById('cursor-dot');
+  var spotX = gsap.quickTo(spot, 'left', { duration: 0.35, ease: 'power2.out' });
+  var spotY = gsap.quickTo(spot, 'top',  { duration: 0.35, ease: 'power2.out' });
+  window.addEventListener('mousemove', function(e) {
+    spotX(e.clientX - 120);
+    spotY(e.clientY - 120);
+    gsap.set(dot, { left: e.clientX, top: e.clientY });
+  });
 
   // ── Hero entrance ─────────────────────────────────────────────
   ['.hero-right', '.hero-ctas'].forEach(function(sel, i) {
