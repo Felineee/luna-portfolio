@@ -400,14 +400,14 @@
 </main>
 
 <script>
-  // ── Simple shutters reveal (left to right, 0.8s) ───────────
+  // ── Fade + slide up reveal ──────────────────────────────────
   var bio1 = document.querySelector('.bio-p1');
   var bio2 = document.querySelector('.bio-p2');
   if (bio1) {
-    gsap.fromTo(bio1, { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0 0 0)', duration: 0.8, ease: 'power2.out' });
+    gsap.fromTo(bio1, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' });
   }
   if (bio2) {
-    gsap.fromTo(bio2, { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0 0 0)', duration: 0.8, ease: 'power2.out', delay: 0.2 });
+    gsap.fromTo(bio2, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out', delay: 0.15 });
   }
 
   // ── Hero entrance ─────────────────────────────────────────────
