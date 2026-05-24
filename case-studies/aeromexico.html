@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aeromexico Mobile App — Luna Wang</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #ffffff;
+      --ink: #0a0a0a;
+      --mid: #666;
+      --rule: #e0e0e0;
+      --font: 'Poppins', sans-serif;
+      --max: 1268px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      padding-top: 56px;
+    }
+
+    /* ─── NAV ──────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px;
+      height: 56px;
+      border-bottom: 1px solid var(--rule);
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .nav-links { display: flex; gap: 40px; }
+    .nav-links a {
+      font-size: 16px; font-weight: 300;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      text-decoration: none; color: var(--mid);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+
+    .nav-icons { display: flex; gap: 16px; align-items: center; }
+    .nav-icons a { display: flex; color: var(--ink); text-decoration: none; opacity: 0.4; transition: opacity 0.2s; }
+    .nav-icons a:hover { opacity: 1; }
+    .nav-icons svg { width: 18px; height: 18px; }
+
+    /* ─── LAYOUT ────────────────────────────────────── */
+    main { padding-bottom: 120px; }
+
+    .container {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    /* ─── HERO SECTION ──────────────────────────────── */
+    .hero {
+      padding: 80px 0 40px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .hero-meta {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 40px;
+      margin-bottom: 60px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .meta-item label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 8px;
+    }
+
+    .meta-item p {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--ink);
+    }
+
+    .hero-content {
+      margin-bottom: 80px;
+    }
+
+    .hero-title {
+      font-size: 48px;
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 32px;
+      color: var(--ink);
+    }
+
+    .hero-subtitle {
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--mid);
+      max-width: 720px;
+      margin-bottom: 48px;
+    }
+
+    .hero-image {
+      width: 100%;
+      height: 400px;
+      background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 14px;
+    }
+
+    /* ─── SECTION STYLES ────────────────────────────── */
+    section {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    section:last-of-type {
+      border-bottom: none;
+    }
+
+    .section-title {
+      font-size: 32px;
+      font-weight: 500;
+      margin-bottom: 48px;
+      color: var(--ink);
+    }
+
+    .section-intro {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--mid);
+      max-width: 720px;
+      margin-bottom: 48px;
+    }
+
+    /* ─── BUSINESS OBJECTIVES ──────────────────────── */
+    .objectives-content {
+      display: grid;
+      gap: 60px;
+    }
+
+    .objectives-block {
+      padding: 40px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+
+    .objectives-block h3 {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 20px;
+      color: var(--ink);
+    }
+
+    .objectives-block p {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--mid);
+      margin-bottom: 12px;
+    }
+
+    .objectives-block p:last-child {
+      margin-bottom: 0;
+    }
+
+    .metrics-list {
+      margin-left: 20px;
+    }
+
+    .metrics-list li {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--mid);
+      margin-bottom: 8px;
+    }
+
+    /* ─── PROBLEM CARDS ────────────────────────────── */
+    .problems-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+      margin-bottom: 48px;
+    }
+
+    .problem-card {
+      padding: 40px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+
+    .problem-card h3 {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 16px;
+      color: var(--ink);
+    }
+
+    .problem-card p {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--mid);
+    }
+
+    /* ─── SOLUTIONS ────────────────────────────────── */
+    .solution-block {
+      margin-bottom: 80px;
+    }
+
+    .solution-block h3 {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 12px;
+      color: var(--ink);
+    }
+
+    .solution-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 24px;
+      display: block;
+    }
+
+    .solution-description {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--mid);
+      margin-bottom: 24px;
+    }
+
+    .solution-bullets {
+      list-style: none;
+      margin-bottom: 40px;
+    }
+
+    .solution-bullets li {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--mid);
+      margin-bottom: 8px;
+      padding-left: 24px;
+      position: relative;
+    }
+
+    .solution-bullets li::before {
+      content: '•';
+      position: absolute;
+      left: 8px;
+      color: var(--mid);
+    }
+
+    .solution-image {
+      width: 100%;
+      height: 300px;
+      background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 14px;
+      margin-bottom: 48px;
+    }
+
+    /* ─── WIREFRAMING ──────────────────────────────── */
+    .wireframe-entry {
+      margin-bottom: 60px;
+    }
+
+    .wireframe-entry h3 {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 16px;
+      color: var(--ink);
+    }
+
+    .wireframe-description {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--mid);
+      margin-bottom: 32px;
+      max-width: 600px;
+    }
+
+    .wireframe-image {
+      width: 100%;
+      height: 350px;
+      background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 14px;
+    }
+
+    /* ─── DESIGN DELIVERY ──────────────────────────── */
+    .delivery-image {
+      width: 100%;
+      height: 600px;
+      background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 14px;
+      margin-bottom: 48px;
+    }
+
+    /* ─── IMPACT SECTION ────────────────────────────── */
+    .impact-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: start;
+    }
+
+    .impact-text {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .impact-text p {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--mid);
+    }
+
+    .impact-metrics {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .metric-item {
+      padding: 24px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      border-left: 4px solid var(--ink);
+    }
+
+    .metric-item p {
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: var(--mid);
+      margin-bottom: 8px;
+    }
+
+    .metric-item strong {
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    @media (max-width: 768px) {
+      .hero-meta {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .hero-title {
+        font-size: 32px;
+      }
+
+      .section-title {
+        font-size: 24px;
+      }
+
+      .problems-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .impact-content {
+        grid-template-columns: 1fr;
+      }
+
+      nav {
+        padding: 0 24px;
+      }
+
+      .container {
+        padding: 0 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-links">
+    <a href="/luna-portfolio/index.html">Home</a>
+    <a href="#">Projects</a>
+    <a href="/luna-portfolio/about.html">About</a>
+  </div>
+  <div class="nav-icons">
+    <a href="https://www.linkedin.com/in/luna-zhiyue-wang/" target="_blank" aria-label="LinkedIn">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+    </a>
+    <a href="mailto:lunazhiyuewang@gmail.com" aria-label="Email">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+    </a>
+  </div>
+</nav>
+
+<main>
+  <!-- HERO SECTION -->
+  <div class="hero">
+    <div class="container">
+      <div class="hero-meta">
+        <div class="meta-item">
+          <label>My Role</label>
+          <p>Product Designer</p>
+        </div>
+        <div class="meta-item">
+          <label>Timeline</label>
+          <p>4 months from concept to Beta launch</p>
+        </div>
+        <div class="meta-item">
+          <label>Team</label>
+          <p>2 Designers, 1 PM, 3 Engineers, 1 Copy Writer, 1 Strategist, 5 stakeholders</p>
+        </div>
+        <div class="meta-item">
+          <label>Scope</label>
+          <p>New mobile self-service flow for flight disruptions</p>
+        </div>
+      </div>
+
+      <div class="hero-content">
+        <h1 class="hero-title">Designing Mobile Recovery for Disrupted Travelers</h1>
+        <p class="hero-subtitle">A mobile self-service experience that helped Aeroméxico guide disrupted travelers through rebooking, hotel support, compensation, refunds, and travel vouchers.</p>
+      </div>
+
+      <div class="hero-image">Placeholder: Hero Image (2000x600px)</div>
+    </div>
+  </div>
+
+  <!-- OVERVIEW SECTION -->
+  <section>
+    <div class="container">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px;">
+        <div>
+          <h2 class="section-title">Problem</h2>
+          <p style="font-size: 16px; font-weight: 300; line-height: 1.8; color: var(--mid);">Disrupted travelers relied on agents, call centers, and manual compensation processes, creating stress for customers and operational pressure for the airline.</p>
+        </div>
+        <div>
+          <h2 class="section-title">My Role</h2>
+          <p style="font-size: 16px; font-weight: 300; line-height: 1.8; color: var(--mid);">Designed the core mobile flows for rebooking, hotel support, compensation, refunds, and wallet vouchers, while helping establish scalable patterns for disruption support.</p>
+        </div>
+      </div>
+
+      <div style="margin-top: 60px; padding-top: 60px; border-top: 1px solid var(--rule);">
+        <h2 class="section-title">Impact</h2>
+        <p style="font-size: 16px; font-weight: 300; line-height: 1.8; color: var(--mid);">Helped reduce call center volume by 28% against an approximately 1M-call baseline.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- UNDERSTAND BUSINESS OBJECTIVES -->
+  <section>
+    <div class="container">
+      <h2 class="section-title">Understand Business Objectives</h2>
+      <p class="section-intro">Through 6 workshops with stakeholders across business, product, and UX, we aligned the project around two goals: improve the traveler experience and reduce costs.</p>
+
+      <div class="objectives-content">
+        <div class="objectives-block">
+          <h3>Improve the Traveler Experience</h3>
+          <p>Flight disruptions are stressful. The product needed to help travelers quickly understand what they could do next, including rebooking, hotel support, compensation, and refunds.</p>
+        </div>
+
+        <div style="padding: 40px; background: #f9f9f9; border-radius: 8px;">
+          <h3 style="font-size: 18px; font-weight: 500; margin-bottom: 24px; color: var(--ink);">Overarching Goals</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+            <div>
+              <p style="font-size: 14px; font-weight: 600; margin-bottom: 12px; color: var(--ink);">Improve Service Recovery NPS +15pp</p>
+              <p style="font-size: 14px; font-weight: 300; color: var(--mid);">Metric: Improve Service Recovery NPS</p>
+            </div>
+            <div>
+              <p style="font-size: 14px; font-weight: 600; margin-bottom: 12px; color: var(--ink);">Increase Digital Self-Service Adoption</p>
+              <p style="font-size: 14px; font-weight: 300; color: var(--mid);">Metric: Increase digital self-service adoption</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding: 40px; background: #f9f9f9; border-radius: 8px;">
+          <h3 style="font-size: 18px; font-weight: 500; margin-bottom: 24px; color: var(--ink);">Sub-Goals</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+            <div>
+              <p style="font-size: 14px; font-weight: 600; margin-bottom: 12px; color: var(--ink);">Make Support Easier</p>
+              <ul class="metrics-list">
+                <li>Reduce wait time</li>
+                <li>Improve customer effort score</li>
+                <li>Reduce reaccommodation time</li>
+              </ul>
+            </div>
+            <div>
+              <p style="font-size: 14px; font-weight: 600; margin-bottom: 12px; color: var(--ink);">Improve Communication</p>
+              <ul class="metrics-list">
+                <li>Increase contactability</li>
+                <li>Improve notification lead time</li>
+                <li>Increase trip disruption support NPS</li>
+              </ul>
+            </div>
+            <div>
+              <p style="font-size: 14px; font-weight: 600; margin-bottom: 12px; color: var(--ink);">Expand Digital Self-Service</p>
+              <ul class="metrics-list">
+                <li>Increase digital containment</li>
+                <li>Increase digital passenger journeys</li>
+                <li>Reduced call/agent volume</li>
+              </ul>
+            </div>
+            <div>
+              <p style="font-size: 14px; font-weight: 600; margin-bottom: 12px; color: var(--ink);">Digitize Compensation</p>
+              <ul class="metrics-list">
+                <li>Increase digital refund share</li>
+                <li>Increase Aerowallet share</li>
+                <li>Reduce manual compensation handling</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="section-intro" style="margin-top: 48px;">To align teams before design, we ran a stakeholder survey across business, product, and operations. I partnered with the PM and strategist to turn the results into MVP scope, focusing on the overlap between customer frustration, service cost, and operational complexity.</p>
+    </div>
+  </section>
+
+  <!-- DEFINE THE PROBLEMS -->
+  <section>
+    <div class="container">
+      <h2 class="section-title">Define the Problems</h2>
+      <p class="section-intro">When flights were delayed, canceled, or disrupted, travelers had to rely on agents, call centers, and manual support to understand what they could do next. This created three major problems:</p>
+
+      <div class="problems-grid">
+        <div class="problem-card">
+          <h3>CX Problem 1:<br>Customers Had to Chase Information</h3>
+          <p>During disruptions, travelers had to actively search for flight updates, available options, and compensation details across multiple channels.</p>
+        </div>
+
+        <div class="problem-card">
+          <h3>CX Problem 2:<br>Disconnected Support Touchpoints</h3>
+          <p>Flight updates, rebooking, hotel support, compensation, refunds, and wallet credits were not connected in one clear mobile journey.</p>
+        </div>
+
+        <div class="problem-card">
+          <h3>CX Problem 3:<br>Unclear Eligibility and Next Steps</h3>
+          <p>Travelers needed clearer guidance on what changed, what they qualified for, and what action to take next.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DESIGN SOLUTIONS -->
+  <section>
+    <div class="container">
+      <h2 class="section-title">Design Solutions</h2>
+      <p class="section-intro">Based on the three CX problems, we defined three design principles to guide the travel disruption self-service experience.</p>
+
+      <div class="solution-block">
+        <span class="solution-label">Solution 1</span>
+        <h3>Proactive Support</h3>
+        <p class="solution-description">Send real-time updates when a disruption happens. Recommend the best available rebooking option first. Give travelers flexible self-service options when they need to make changes. Guide users toward the next best action instead of making them search for help.</p>
+        <ul class="solution-bullets">
+          <li>Send real-time updates when a disruption happens</li>
+          <li>Recommend the best available rebooking option first</li>
+          <li>Give travelers flexible self-service options when they need to make changes</li>
+          <li>Guide users toward the next best action instead of making them search for help</li>
+        </ul>
+        <div class="solution-image">Placeholder: Solution 1 Image (1268x400px)</div>
+      </div>
+
+      <div class="solution-block">
+        <span class="solution-label">Solution 2</span>
+        <h3>Connected Journey</h3>
+        <p class="solution-description">Bring flight updates, rebooking, hotel support, compensation, and refunds into one mobile journey. Create smoother handoffs across app, airport, call center, and partner services.</p>
+        <ul class="solution-bullets">
+          <li>Bring flight updates, rebooking, hotel support, compensation, and refunds into one mobile journey</li>
+          <li>Create smoother handoffs across app, airport, call center, and partner services</li>
+          <li>Allow travelers to continue through their preferred support channel when needed</li>
+          <li>Connect wallet vouchers and airport service partners into the same service flow</li>
+        </ul>
+        <div class="solution-image">Placeholder: Solution 2 Image (1268x400px)</div>
+      </div>
+
+      <div class="solution-block">
+        <span class="solution-label">Solution 3</span>
+        <h3>Trusted Guidance</h3>
+        <p class="solution-description">Use consistent information across channels from a single source of truth. Show clear IROP flight status and eligibility information. Explain what travelers qualify for and what action to take next. Use reassuring, solution-oriented messaging during stressful moments.</p>
+        <ul class="solution-bullets">
+          <li>Use consistent information across channels from a single source of truth</li>
+          <li>Show clear IROP flight status and eligibility information</li>
+          <li>Explain what travelers qualify for and what action to take next</li>
+          <li>Use reassuring, solution-oriented messaging during stressful moments</li>
+        </ul>
+        <div class="solution-image">Placeholder: Solution 3 Image (1268x400px)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WIREFRAMING -->
+  <section>
+    <div class="container">
+      <h2 class="section-title">Wireframing</h2>
+
+      <div class="wireframe-entry">
+        <h3>Entry Points</h3>
+        <p class="wireframe-description">I designed different entry points based on user context and eligibility. Prioritized users could access recovery actions through a prominent banner, while other users could find relevant support through wallet or trip-related surfaces.</p>
+        <div class="wireframe-image">Placeholder: Wireframe Entry Points (1268x400px)</div>
+      </div>
+
+      <div class="wireframe-entry">
+        <h3>Guided Claim Flow</h3>
+        <p class="wireframe-description">To reduce live agent dependency and lower user effort, we designed a step-by-step reimbursement flow that helped customers submit required information digitally.</p>
+        <div class="wireframe-image">Placeholder: Wireframe Claim Flow (1268x400px)</div>
+      </div>
+
+      <div class="wireframe-entry">
+        <h3>Wallet Outcome</h3>
+        <p class="wireframe-description">Eligible vouchers could be added to the wallet automatically, helping customers understand where their compensation value lived and how to use it.</p>
+        <div class="wireframe-image">Placeholder: Wireframe Wallet (1268x400px)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DESIGN DELIVERY -->
+  <section>
+    <div class="container">
+      <h2 class="section-title">Design Delivery</h2>
+      <p class="section-intro">The redesigned experience brought the core disruption recovery actions from manual and paper-based processes into mobile self-service.</p>
+      <div class="delivery-image">Placeholder: Design Delivery Components Grid (1268x700px)</div>
+    </div>
+  </section>
+
+  <!-- IMPACT -->
+  <section>
+    <div class="container">
+      <h2 class="section-title">Impact</h2>
+      <div class="impact-content">
+        <div class="impact-text">
+          <p>The redesigned experience helped Aeroméxico move key disruption recovery actions from manual and paper-based processes into mobile self-service.</p>
+          <p>We enabled customers to rebook flights, access hotel support, and claim compensation in-app. This digitized compensation and refund flows that previously relied on more manual processes and reduced call center dependency for eligible disruption scenarios.</p>
+        </div>
+        <div class="impact-metrics">
+          <div class="metric-item">
+            <p><strong>28%</strong> reduction in call center volume</p>
+            <p>From an approximately 1M-call baseline</p>
+          </div>
+          <div class="metric-item">
+            <p>Enabled customers to <strong>rebook flights, access hotel support, and claim compensation in-app</strong></p>
+          </div>
+          <div class="metric-item">
+            <p>Digitized compensation and refund flows that previously relied on <strong>more manual processes</strong></p>
+          </div>
+          <div class="metric-item">
+            <p>Created a <strong>scalable mobile pattern</strong> for future IROP support experiences</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>
