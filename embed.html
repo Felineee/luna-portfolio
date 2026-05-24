@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Luna Wang</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #ffffff;
+      --white: #0a0a0a;
+      --bg:    #ffffff;
+      --ink:   #0a0a0a;
+      --mid:   #444;
+      --rule:  #e0e0e0;
+      --font:  'Poppins', sans-serif;
+      --max:   1268px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── LAYOUT ────────────────────────────────────── */
+    main { padding-top: 0; }
+
+    .container {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 18px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 0 64px;
+      align-items: start;
+    }
+
+    /* ─── HERO ──────────────────────────────────────── */
+    .hero {
+      padding: 80px 0;
+    }
+    .hero-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 80px;
+      align-items: start;
+    }
+    .hero-left {}
+    .hero-right {
+      padding-top: 6px;
+    }
+    .bio-p1 {
+      font-size: clamp(26px, 3vw, 34px);
+      font-weight: 500;
+      line-height: 1.55;
+      color: var(--ink);
+      margin-bottom: 36px;
+      letter-spacing: -0.01em;
+    }
+    .bio-p2 {
+      font-size: 16px;
+      font-weight: 200;
+      line-height: 1.85;
+      color: #555;
+      margin-bottom: 0;
+    }
+    .bio-p2 strong { font-weight: 400; color: #0a0a0a; }
+
+    /* ─── CTAs ───────────────────────────────────────── */
+    .hero-ctas {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin-top: 36px;
+    }
+    .cta-solid {
+      display: flex; align-items: center; justify-content: center;
+      height: 32px;
+      padding: 0 16px;
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--font);
+      font-size: 16px; font-weight: 400;
+      letter-spacing: 0; text-transform: none;
+      text-decoration: none;
+      border-radius: 50px;
+      transition: background 0.2s, opacity 0.2s;
+    }
+    .cta-solid:hover { background: #333; color: #fff; }
+    .cta-outline {
+      display: flex; align-items: center; justify-content: center;
+      height: 32px;
+      padding: 0 16px;
+      border: 1px solid #ccc;
+      color: #444;
+      font-family: var(--font);
+      font-size: 16px; font-weight: 400;
+      letter-spacing: 0; text-transform: none;
+      text-decoration: none;
+      border-radius: 50px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .cta-outline:hover { border-color: #888; color: var(--ink); }
+
+    /* ─── EXPERIENCE ─────────────────────────────────── */
+    .section-experience {
+      padding: 80px 0;
+    }
+    .exp-header {
+      display: grid;
+      grid-template-columns: 2fr 1.6fr 2fr 100px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 0;
+    }
+    .exp-header span {
+      font-size: 16px;
+      font-weight: 300;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #555;
+    }
+    .exp-row {
+      display: grid;
+      grid-template-columns: 2fr 1.6fr 2fr 100px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--rule);
+      align-items: center;
+      cursor: default;
+      transition: background 0.2s;
+      border-radius: 2px;
+    }
+    .exp-row:hover { background: #0a0a0a; }
+    .exp-row:hover .exp-role { color: #fff; }
+    .exp-row:hover .exp-company { color: #fff; }
+    .exp-row:hover .exp-year { color: #fff; }
+    .exp-row:hover .tag { color: #fff; border-color: #555; }
+    .exp-role {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--ink);
+    }
+    .exp-company {
+      font-size: 13px;
+      font-weight: 200;
+      color: var(--mid);
+    }
+    .exp-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .tag {
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      color: #555;
+      border: 1px solid #d0d0d0;
+      border-radius: 100px;
+      padding: 2px 9px;
+    }
+    .exp-year {
+      font-size: 13px;
+      font-weight: 200;
+      color: #555;
+      text-align: right;
+    }
+
+    /* ─── TOOLS ──────────────────────────────────────── */
+    .section-tools {
+      padding: 80px 0;
+    }
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0;
+      justify-items: start;
+    }
+    .tool-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      padding: 22px 0;
+      cursor: default;
+      width: 200px;
+    }
+    .app-icon {
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.22s ease;
+    }
+    .app-icon img {
+      width: auto; height: 18px;
+      object-fit: contain;
+      display: block;
+    }
+    .tool-item:hover .app-icon { transform: scale(1.12); }
+    .tool-name {
+      font-size: 16px;
+      font-weight: 300;
+      color: #555;
+      transition: color 0.25s;
+    }
+    .tool-item:hover .tool-name { color: var(--ink); }
+
+    /* ─── EDUCATION ──────────────────────────────────── */
+    .section-education {
+      padding: 52px 0;
+    }
+    .edu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 48px;
+    }
+    .edu-card {
+      padding: 0;
+      cursor: default;
+    }
+    .edu-card-year {
+      font-size: 16px;
+      font-weight: 300;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 24px;
+    }
+    .edu-card-school {
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--ink);
+      line-height: 1.35;
+      margin-bottom: 10px;
+    }
+    .edu-card-degree {
+      font-size: 16px;
+      font-weight: 200;
+      color: #555;
+      line-height: 1.6;
+    }
+
+
+    /* ─── TYPING CURSOR ─────────────────────────────── */
+    .type-cursor {
+      display: inline-block;
+      width: 2px; height: 0.9em;
+      background: var(--ink);
+      margin-left: 1px;
+      vertical-align: -0.05em;
+      animation: blink 0.75s step-end infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* ─── INIT STATES ───────────────────────────────── */
+    .fade-up { opacity: 0; transform: translateY(40px); }
+
+    /* ─── RESPONSIVE ────────────────────────────────── */
+
+
+    @media (max-width: 768px) {
+      nav { padding: 0 24px; }
+      .container { padding: 0 24px; }
+      .hero-split { grid-template-columns: 1fr; gap: 32px 0; }
+      .exp-header { display: none; }
+      .exp-row { grid-template-columns: 1fr; gap: 6px; }
+      .exp-year { text-align: left; }
+      .tools-grid { grid-template-columns: repeat(2, 1fr); }
+      .edu-grid { grid-template-columns: 1fr; gap: 32px 0; }
+      .hero-ctas { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<main>
+
+  <!-- ── HERO ─────────────────────────────── -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-split">
+        <div class="hero-left">
+          <p class="bio-p1">With training in interaction design@UC Berkeley and architecture@University of Edinburgh, I bring a systems-level lens to product design, turning complex workflows into experiences that feel clear, scalable, and trustworthy.</p>
+          <div class="hero-ctas">
+            <a href="resume.pdf" class="cta-solid" download>Download resume</a>
+            <a href="https://www.linkedin.com/in/luna-zhiyue-wang/" target="_blank" class="cta-outline">Connect now</a>
+          </div>
+        </div>
+        <div class="hero-right">
+          <p class="bio-p2">
+            My work spans <strong>LLM-powered acquisition flows and agentic AI finance</strong> at Verizon Visa Card,
+            <strong>AI and emerging technology products</strong> at Samsung,
+            and <strong>e-commerce growth</strong> as co-founder and product lead at Cfierce.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EXPERIENCE ─────────────────────── -->
+  <section class="section-experience">
+    <div class="container">
+
+      <div class="exp-row fade-up">
+        <div class="exp-role">Senior Product Designer</div>
+        <div class="exp-company">Verizon Visa Card</div>
+        <div class="exp-tags"><span class="tag">Payment</span><span class="tag">Loyalty</span><span class="tag">AI</span></div>
+        <div class="exp-year">2025–26</div>
+      </div>
+      <div class="exp-row fade-up">
+        <div class="exp-role">Senior Product Designer</div>
+        <div class="exp-company">Delta Airlines</div>
+        <div class="exp-tags"><span class="tag">Travel</span><span class="tag">On-demand</span></div>
+        <div class="exp-year">2024</div>
+      </div>
+      <div class="exp-row fade-up">
+        <div class="exp-role">Product Designer</div>
+        <div class="exp-company">ADT Security System</div>
+        <div class="exp-tags"><span class="tag">B2B</span></div>
+        <div class="exp-year">2023</div>
+      </div>
+      <div class="exp-row fade-up">
+        <div class="exp-role">Product Designer</div>
+        <div class="exp-company">Samsung</div>
+        <div class="exp-tags"><span class="tag">AI</span><span class="tag">AR/VR</span></div>
+        <div class="exp-year">2022</div>
+      </div>
+      <div class="exp-row fade-up">
+        <div class="exp-role">Co-founder, Product Lead</div>
+        <div class="exp-company">Cfierce</div>
+        <div class="exp-tags"><span class="tag">Growth</span><span class="tag">Retail</span></div>
+        <div class="exp-year">2018–21</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TOOLS ──────────────────────────── -->
+  <section class="section-tools">
+    <div class="container">
+      <div class="tools-grid">
+
+        <div class="tool-item fade-up">
+          <div class="app-icon"><img src="icons/figma.png" alt="Figma"></div>
+          <span class="tool-name">Figma</span>
+        </div>
+        <div class="tool-item fade-up">
+          <div class="app-icon"><img src="icons/figma.png" alt="Figma Make"></div>
+          <span class="tool-name">Figma Make</span>
+        </div>
+        <div class="tool-item fade-up">
+          <div class="app-icon"><img src="icons/claude.png" alt="Claude"></div>
+          <span class="tool-name">Claude</span>
+        </div>
+        <div class="tool-item fade-up">
+          <div class="app-icon"><img src="icons/lovable.png" alt="Lovable"></div>
+          <span class="tool-name">Lovable</span>
+        </div>
+        <div class="tool-item fade-up">
+          <div class="app-icon"><img src="icons/usertesting.png" alt="UserTesting"></div>
+          <span class="tool-name">UserTesting</span>
+        </div>
+
+        <div class="tool-item fade-up">
+          <div class="app-icon"><img src="icons/jira.png" alt="Jira"></div>
+          <span class="tool-name">Jira</span>
+        </div>
+        <div class="tool-item fade-up">
+          <div class="app-icon"><img src="icons/miro.png" alt="Miro"></div>
+          <span class="tool-name">Miro</span>
+        </div>
+        <div class="tool-item fade-up">
+          <div class="app-icon"><img src="icons/blender.png" alt="Blender"></div>
+          <span class="tool-name">Blender</span>
+        </div>
+        <div class="tool-item fade-up">
+          <div class="app-icon"><img src="icons/sketch.png" alt="Sketch"></div>
+          <span class="tool-name">Sketch</span>
+        </div>
+
+        <div class="tool-item fade-up">
+          <div class="app-icon"><img src="icons/photoshop.png" alt="Photoshop"></div>
+          <span class="tool-name">Photoshop</span>
+        </div>
+        <div class="tool-item fade-up">
+          <div class="app-icon"><img src="icons/illustrator.png" alt="Illustrator"></div>
+          <span class="tool-name">Illustrator</span>
+        </div>
+        <div class="tool-item fade-up">
+          <div class="app-icon"><img src="icons/ae.png" alt="After Effects"></div>
+          <span class="tool-name">After Effects</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+
+
+</main>
+
+<script>
+  // ── Fade + slide up reveal ──────────────────────────────────
+  var bio1 = document.querySelector('.bio-p1');
+  var bio2 = document.querySelector('.bio-p2');
+  if (bio1) {
+    gsap.fromTo(bio1, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' });
+  }
+  if (bio2) {
+    gsap.fromTo(bio2, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out', delay: 0.15 });
+  }
+
+  // ── Hero entrance ─────────────────────────────────────────────
+  ['.hero-right', '.hero-ctas'].forEach(function(sel, i) {
+    gsap.fromTo(sel,
+      { opacity: 0, y: 52, scale: 0.96 },
+      { opacity: 1, y: 0, scale: 1,
+        duration: 1.1, ease: 'power3.out',
+        delay: 0.35 + i * 0.2 }
+    );
+  });
+
+  // ── Scroll-in animations via IntersectionObserver (works in iframes) ──
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (!entry.isIntersecting) return;
+      var el = entry.target;
+      var i  = parseInt(el.dataset.ioIndex) || 0;
+      gsap.fromTo(el,
+        { opacity: 0, y: 28, scale: 0.97 },
+        { opacity: 1, y: 0,  scale: 1,
+          duration: 0.45, ease: 'power2.out', delay: i * 0.04 }
+      );
+      io.unobserve(el);
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.exp-row, .tool-item').forEach(function(el, i) {
+    el.dataset.ioIndex = i;
+    gsap.set(el, { opacity: 0 });
+    io.observe(el);
+  });
+
+  // ── Tool hover lift ───────────────────────────────────────────
+  document.querySelectorAll('.tool-item').forEach(function(el) {
+    el.addEventListener('mouseenter', function() {
+      gsap.to(el, { y: -5, duration: 0.18, ease: 'power2.out' });
+    });
+    el.addEventListener('mouseleave', function() {
+      gsap.to(el, { y: 0, duration: 0.3, ease: 'power2.out' });
+    });
+  });
+</script>
+</body>
+</html>
