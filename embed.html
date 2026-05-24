@@ -400,68 +400,57 @@
 </main>
 
 <script>
-  // ── Natural typing animation ──────────────────────────────────
+  // ── Shutters animation (12 parts, from right, 1.5s) ──────────
   (function() {
-    var target = document.getElementById('typed-bio');
-    if (!target) return;
+    var bio1 = document.querySelector('.bio-p1');
+    var bio2 = document.querySelector('.bio-p2');
+    if (!bio1 || !bio2) return;
 
-    var fullText = 'With training in interaction design@UC Berkeley and architecture@University of Edinburgh, I bring a systems-level lens to product design, turning complex workflows into experiences that feel clear, scalable, and trustworthy.';
+    // Set reserve height for bio-p1
+    var text1 = 'With training in interaction design@UC Berkeley and architecture@University of Edinburgh, I bring a systems-level lens to product design, turning complex workflows into experiences that feel clear, scalable, and trustworthy.';
+    bio1.textContent = text1;
+    var lh = parseFloat(window.getComputedStyle(bio1).lineHeight) || 40;
+    bio1.style.minHeight = (bio1.offsetHeight + lh) + 'px';
 
-    function startTyping() {
-      // Reserve height first so layout never shifts during typing
-      target.textContent = fullText;
-      var lh = parseFloat(window.getComputedStyle(target).lineHeight) || 40;
-      target.style.minHeight = (target.offsetHeight + lh) + 'px';
-      target.textContent = '';
-
-      // Insert blinking cursor + text node
-      var cursor = document.createElement('span');
-      cursor.className = 'type-cursor';
-      target.appendChild(cursor);
-      var textNode = document.createTextNode('');
-      target.insertBefore(textNode, cursor);
-
-      var typed = '';
-
-      function rand(a, b) { return (a + Math.random() * (b - a)) | 0; }
-      function pause(ms)  { return new Promise(function(r) { setTimeout(r, ms); }); }
-
-      async function run() {
-        for (var i = 0; i < fullText.length; i++) {
-          var ch = fullText[i];
-
-          if (Math.random() < 0.025 && ch !== ' ' && i < fullText.length - 8) {
-            var offset = Math.random() < 0.5 ? 1 : -1;
-            textNode.nodeValue = typed + String.fromCharCode(ch.charCodeAt(0) + offset);
-            await pause(rand(20, 60));
-            if (Math.random() < 0.55) await pause(rand(47, 147));
-            textNode.nodeValue = typed;
-            await pause(rand(23, 50));
-            if (Math.random() < 0.4) await pause(rand(60, 173));
-          }
-
-          var ms;
-          if      (ch === ' ')                ms = rand(13, 35);
-          else if (ch === ',' || ch === ';')  ms = rand(40, 100);
-          else if (ch === '.' || ch === '—')  ms = rand(57, 140);
-          else                                ms = rand(8, 30);
-
-          if (Math.random() < 0.03) await pause(rand(127, 293));
-
-          typed += ch;
-          textNode.nodeValue = typed;
-          await pause(ms);
-        }
+    // Split into 12 parts and wrap each in span
+    function wrapIn12Parts(el) {
+      var text = el.textContent;
+      var partLen = Math.ceil(text.length / 12);
+      var html = '';
+      for (var i = 0; i < 12; i++) {
+        var part = text.substring(i * partLen, (i + 1) * partLen);
+        if (part) html += '<span style="overflow:hidden;display:inline;">' + part + '</span>';
       }
-
-      setTimeout(run, 480);
+      el.innerHTML = html;
     }
 
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(startTyping);
-    } else {
-      startTyping();
-    }
+    wrapIn12Parts(bio1);
+    wrapIn12Parts(bio2);
+
+    // Shutters animation: clip-path reveals from right to left
+    var spans1 = bio1.querySelectorAll('span');
+    gsap.fromTo(spans1,
+      { clipPath: 'inset(0 100% 0 0)' },
+      {
+        clipPath: 'inset(0 0 0 0)',
+        duration: 1.5,
+        ease: 'power2.inOut',
+        stagger: 0.08
+      }
+    );
+
+    // Bio-p2 shutters: same animation, starts after bio-p1 finishes (1.5s delay)
+    var spans2 = bio2.querySelectorAll('span');
+    gsap.fromTo(spans2,
+      { clipPath: 'inset(0 100% 0 0)' },
+      {
+        clipPath: 'inset(0 0 0 0)',
+        duration: 1.5,
+        ease: 'power2.inOut',
+        stagger: 0.08,
+        delay: 1.5
+      }
+    );
   })();
 
   // ── Hero entrance ─────────────────────────────────────────────
