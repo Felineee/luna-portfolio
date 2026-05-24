@@ -280,7 +280,7 @@
     <div class="container">
       <div class="hero-split">
         <div class="hero-left">
-          <p class="bio-p1" id="typed-bio"></p>
+          <p class="bio-p1">With training in interaction design@UC Berkeley and architecture@University of Edinburgh, I bring a systems-level lens to product design, turning complex workflows into experiences that feel clear, scalable, and trustworthy.</p>
           <div class="hero-ctas">
             <a href="resume.pdf" class="cta-solid" download>Download resume</a>
             <a href="https://www.linkedin.com/in/luna-zhiyue-wang/" target="_blank" class="cta-outline">Connect now</a>
@@ -400,58 +400,15 @@
 </main>
 
 <script>
-  // ── Shutters animation (12 parts, from right, 1.5s) ──────────
-  (function() {
-    var bio1 = document.querySelector('.bio-p1');
-    var bio2 = document.querySelector('.bio-p2');
-    if (!bio1 || !bio2) return;
-
-    // Set reserve height for bio-p1
-    var text1 = 'With training in interaction design@UC Berkeley and architecture@University of Edinburgh, I bring a systems-level lens to product design, turning complex workflows into experiences that feel clear, scalable, and trustworthy.';
-    bio1.textContent = text1;
-    var lh = parseFloat(window.getComputedStyle(bio1).lineHeight) || 40;
-    bio1.style.minHeight = (bio1.offsetHeight + lh) + 'px';
-
-    // Split into 12 parts and wrap each in span
-    function wrapIn12Parts(el) {
-      var text = el.textContent;
-      var partLen = Math.ceil(text.length / 12);
-      var html = '';
-      for (var i = 0; i < 12; i++) {
-        var part = text.substring(i * partLen, (i + 1) * partLen);
-        if (part) html += '<span style="overflow:hidden;display:inline;">' + part + '</span>';
-      }
-      el.innerHTML = html;
-    }
-
-    wrapIn12Parts(bio1);
-    wrapIn12Parts(bio2);
-
-    // Shutters animation: clip-path reveals from right to left
-    var spans1 = bio1.querySelectorAll('span');
-    gsap.fromTo(spans1,
-      { clipPath: 'inset(0 100% 0 0)' },
-      {
-        clipPath: 'inset(0 0 0 0)',
-        duration: 1.5,
-        ease: 'power2.inOut',
-        stagger: 0.08
-      }
-    );
-
-    // Bio-p2 shutters: same animation, starts after bio-p1 finishes (1.5s delay)
-    var spans2 = bio2.querySelectorAll('span');
-    gsap.fromTo(spans2,
-      { clipPath: 'inset(0 100% 0 0)' },
-      {
-        clipPath: 'inset(0 0 0 0)',
-        duration: 1.5,
-        ease: 'power2.inOut',
-        stagger: 0.08,
-        delay: 1.5
-      }
-    );
-  })();
+  // ── Simple shutters reveal (left to right, 0.8s) ───────────
+  var bio1 = document.querySelector('.bio-p1');
+  var bio2 = document.querySelector('.bio-p2');
+  if (bio1) {
+    gsap.fromTo(bio1, { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0 0 0)', duration: 0.8, ease: 'power2.out' });
+  }
+  if (bio2) {
+    gsap.fromTo(bio2, { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0 0 0)', duration: 0.8, ease: 'power2.out', delay: 0.2 });
+  }
 
   // ── Hero entrance ─────────────────────────────────────────────
   ['.hero-right', '.hero-ctas'].forEach(function(sel, i) {
