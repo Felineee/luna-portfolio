@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUNA — Morph</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0e100f;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 56px;
+      font-family: 'Inter', sans-serif;
+    }
+    .stage { display: flex; gap: 48px; align-items: flex-end; }
+    .item  { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+    svg    { width: 110px; height: 110px; overflow: visible; }
+    .item-label {
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      color: #2a2a2a;
+      text-transform: uppercase;
+    }
+    button {
+      background: none;
+      border: 1px solid #222;
+      color: #3a3a3a;
+      padding: 10px 28px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    button:hover { border-color: #555; color: #888; }
+  </style>
+</head>
+<body>
+
+<div class="stage">
+
+  <!-- L: square → L -->
+  <div class="item">
+    <svg viewBox="0 0 100 100">
+      <defs>
+        <linearGradient id="g-l" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#ff8709"/>
+          <stop offset="1" stop-color="#f7bdf8"/>
+        </linearGradient>
+      </defs>
+      <path id="p-l" fill="url(#g-l)"
+        d="M 13,10 L 87,10 L 87,72 L 87,72 L 87,90 L 13,90 Z"/>
+    </svg>
+    <span class="item-label">L</span>
+  </div>
+
+  <!-- U: octagon → U -->
+  <div class="item">
+    <svg viewBox="0 0 100 100">
+      <defs>
+        <linearGradient id="g-u" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#e54cff"/>
+          <stop offset="1" stop-color="#00c2ff"/>
+        </linearGradient>
+      </defs>
+      <path id="p-u" fill="url(#g-u)" fill-rule="evenodd"
+        d="M 50,4 L 83,17 L 96,50 L 83,83 L 50,96 L 17,83 L 4,50 L 17,17 Z"/>
+    </svg>
+    <span class="item-label">U</span>
+  </div>
+
+  <!-- N: square → N -->
+  <div class="item">
+    <svg viewBox="0 0 100 100">
+      <defs>
+        <linearGradient id="g-n" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#00c2ff"/>
+          <stop offset="1" stop-color="#33ff8c"/>
+        </linearGradient>
+      </defs>
+      <path id="p-n" fill="url(#g-n)"
+        d="M 10,10 L 38,10 L 62,10 L 90,10 L 90,90 L 62,90 L 38,90 L 10,90 Z"/>
+    </svg>
+    <span class="item-label">N</span>
+  </div>
+
+  <!-- ∧: triangle → inverted V -->
+  <div class="item">
+    <svg viewBox="0 0 100 100">
+      <defs>
+        <linearGradient id="g-v" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#33ff8c"/>
+          <stop offset="1" stop-color="#ffc640"/>
+        </linearGradient>
+      </defs>
+      <!-- solid triangle, same 6 points as ∧, just inner apex on base line -->
+      <path id="p-v" fill="url(#g-v)" fill-rule="evenodd"
+        d="M 13,90 L 50,10 L 87,90 L 72,90 L 50,90 L 28,90 Z"/>
+    </svg>
+    <span class="item-label">∧</span>
+  </div>
+
+</div>
+
+<button id="btn">→ Letters</button>
+
+<script>
+  var data = {
+    l: {
+      shape:  "M 13,10 L 87,10 L 87,72 L 87,72 L 87,90 L 13,90 Z",
+      letter: "M 13,10 L 38,10 L 38,72 L 87,72 L 87,90 L 13,90 Z"
+    },
+    u: {
+      shape:  "M 50,4  L 83,17 L 96,50 L 83,83 L 50,96 L 17,83 L 4,50  L 17,17 Z",
+      letter: "M 13,10 L 13,90 L 87,90 L 87,10 L 67,10 L 67,72 L 33,72 L 33,10 Z"
+    },
+    n: {
+      shape:  "M 10,10 L 38,10 L 62,10 L 90,10 L 90,90 L 62,90 L 38,90 L 10,90 Z",
+      letter: "M 10,10 L 38,10 L 62,90 L 90,90 L 90,10 L 62,10 L 38,90 L 10,90 Z"
+    },
+    v: {
+      shape:  "M 13,90 L 50,10 L 87,90 L 72,90 L 50,90 L 28,90 Z",
+      letter: "M 13,90 L 50,10 L 87,90 L 72,90 L 50,34 L 28,90 Z"
+    }
+  };
+
+  var ids    = ['l','u','n','v'];
+  var isLetter = false;
+  var timer;
+
+  function morphTo(state) {
+    ids.forEach(function(id, i) {
+      gsap.to('#p-' + id, {
+        attr: { d: data[id][state] },
+        duration: 1.3,
+        ease: 'power3.inOut',
+        delay: i * 0.09
+      });
+    });
+    isLetter = state === 'letter';
+    document.getElementById('btn').textContent = isLetter ? '← Shapes' : '→ Letters';
+  }
+
+  document.getElementById('btn').addEventListener('click', function() {
+    clearInterval(timer);
+    morphTo(isLetter ? 'shape' : 'letter');
+  });
+
+  setTimeout(function() { morphTo('letter'); }, 800);
+  timer = setInterval(function() {
+    morphTo(isLetter ? 'shape' : 'letter');
+  }, 2800);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 90" width="420" height="90">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300&amp;display=swap');
+      .wordmark {
+        font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+        font-size: 52px;
+        font-weight: 300;
+        letter-spacing: 0.08em;
+        fill: black;
+      }
+    </style>
+
+    <!-- mask to carve out crescent from full circle -->
+    <mask id="crescent-mask">
+      <rect width="420" height="90" fill="white"/>
+      <circle cx="148" cy="45" r="20" fill="black"/>
+    </mask>
+  </defs>
+
+  <!-- L -->
+  <text class="wordmark" x="18" y="68">L</text>
+
+  <!-- Crescent moon (U) -->
+  <circle cx="136" cy="45" r="24" fill="black" mask="url(#crescent-mask)"/>
+
+  <!-- N  A -->
+  <text class="wordmark" x="172" y="68">N</text>
+  <text class="wordmark" x="248" y="68">A</text>
+
+</svg>

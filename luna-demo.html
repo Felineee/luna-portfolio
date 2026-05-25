@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LUNA — Logo Demo</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 64px;
+      transition: background 0.4s;
+    }
+
+    body.dark { background: #0d0d0d; }
+    body.light { background: #ffffff; }
+
+    .label {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      transition: color 0.4s;
+    }
+    body.dark .label { color: #444; }
+    body.light .label { color: #bbb; }
+
+    svg { overflow: visible; }
+
+    .letter {
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.4s;
+    }
+    body.dark .letter { stroke: #ffffff; }
+    body.light .letter { stroke: #232323; }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+    }
+
+    button {
+      background: none;
+      border: 1px solid;
+      padding: 8px 22px;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    body.dark button { border-color: #333; color: #555; }
+    body.dark button:hover { border-color: #666; color: #aaa; }
+    body.light button { border-color: #ddd; color: #aaa; }
+    body.light button:hover { border-color: #aaa; color: #555; }
+  </style>
+</head>
+<body class="dark">
+
+  <p class="label">Logo — stroke draw animation</p>
+
+  <svg width="380" height="90" viewBox="0 0 380 90">
+    <!-- L -->
+    <path class="letter" d="M 10,12 L 10,78 L 52,78"/>
+    <!-- U -->
+    <path class="letter" d="M 74,12 L 74,56 Q 74,82 100,82 Q 126,82 126,56 L 126,12"/>
+    <!-- N -->
+    <path class="letter" d="M 149,78 L 149,12 L 194,78 L 194,12"/>
+    <!-- A -->
+    <path class="letter" d="M 218,78 L 245,12 L 272,78"/>
+    <!-- A crossbar -->
+    <path class="letter" d="M 228,54 L 262,54"/>
+  </svg>
+
+  <div class="controls">
+    <button id="btnReplay">Replay</button>
+    <button id="btnTheme">Light mode</button>
+  </div>
+
+<script>
+  var letters = document.querySelectorAll('.letter');
+
+  // Set strokeDasharray to exact path length for each letter
+  letters.forEach(function(el) {
+    var len = el.getTotalLength();
+    el.style.strokeDasharray = len;
+    el.style.strokeDashoffset = len;
+  });
+
+  function play() {
+    gsap.to(letters, {
+      strokeDashoffset: 0,
+      duration: 0.9,
+      ease: 'power2.inOut',
+      stagger: 0.14,
+      delay: 0.2
+    });
+  }
+
+  play();
+
+  document.getElementById('btnReplay').addEventListener('click', function() {
+    letters.forEach(function(el) {
+      gsap.set(el, { strokeDashoffset: el.getTotalLength() });
+    });
+    play();
+  });
+
+  var isDark = true;
+  document.getElementById('btnTheme').addEventListener('click', function() {
+    isDark = !isDark;
+    document.body.className = isDark ? 'dark' : 'light';
+    this.textContent = isDark ? 'Light mode' : 'Dark mode';
+  });
+</script>
+</body>
+</html>

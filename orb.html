@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orb</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script>
+const SIZE = Math.min(window.innerWidth, window.innerHeight) * 0.85;
+const R = 1.18;
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(SIZE, SIZE);
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setClearColor(0xffffff);
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 50);
+camera.position.z = 4.8;
+
+const orb = new THREE.Group();
+scene.add(orb);
+
+// Subtle sphere shell
+orb.add(new THREE.Mesh(
+  new THREE.SphereGeometry(R, 64, 64),
+  new THREE.MeshBasicMaterial({
+    color: 0x000000, transparent: true, opacity: 0.025,
+    side: THREE.FrontSide, depthWrite: false,
+  })
+));
+
+// Silhouette ring — always camera-facing
+const ringPts = [];
+for (let i = 0; i <= 256; i++) {
+  const a = (i / 256) * Math.PI * 2;
+  ringPts.push(new THREE.Vector3(Math.cos(a) * R, Math.sin(a) * R, 0));
+}
+const ringLine = new THREE.LineLoop(
+  new THREE.BufferGeometry().setFromPoints(ringPts),
+  new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.15 })
+);
+scene.add(ringLine);
+
+// ── Soft-edge shader ──────────────────────────────────────────
+// Fades ribbon opacity to 0 at both width-edges (V axis) → smoke/fog look
+const VS = `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+const FS = `
+  uniform float uOpacity;
+  varying vec2 vUv;
+  void main() {
+    // Gaussian-ish fade across the ribbon width (V = 0..1)
+    float v = vUv.y * 2.0 - 1.0;               // -1 to +1
+    float edge = exp(-v * v * 5.5);             // gaussian falloff
+    float alpha = uOpacity * edge;
+    gl_FragColor = vec4(0.0, 0.0, 0.0, alpha);
+  }
+`;
+
+// ── Ribbon factory ────────────────────────────────────────────
+const SEGS = 320;
+const updaters = [];
+
+function addRibbon(opts) {
+  const geo = new THREE.BufferGeometry();
+  const pos = new Float32Array(SEGS * 2 * 3);
+  const uvs = new Float32Array(SEGS * 2 * 2);
+  const idxArr = [];
+  for (let i = 0; i < SEGS - 1; i++) {
+    const b = i * 2;
+    idxArr.push(b, b+1, b+2, b+1, b+3, b+2);
+  }
+  geo.setIndex(idxArr);
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+
+  // UV: U = position along ribbon, V = 0 on one edge, 1 on other
+  for (let i = 0; i < SEGS; i++) {
+    const u = i / (SEGS - 1);
+    uvs[i*4]   = u;  uvs[i*4+1] = 0;
+    uvs[i*4+2] = u;  uvs[i*4+3] = 1;
+  }
+  geo.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
+
+  const mat = new THREE.ShaderMaterial({
+    uniforms: { uOpacity: { value: opts.opacity ?? 0.12 } },
+    vertexShader: VS,
+    fragmentShader: FS,
+    transparent: true,
+    side: THREE.DoubleSide,
+    depthWrite: false,
+  });
+
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.renderOrder = 2;
+  orb.add(mesh);
+
+  const quat = new THREE.Quaternion().setFromEuler(
+    new THREE.Euler(opts.rx ?? 0, opts.ry ?? 0, opts.rz ?? 0)
+  );
+  const va = new THREE.Vector3(), vb = new THREE.Vector3();
+
+  updaters.push(function(t) {
+    const arr = geo.attributes.position.array;
+    const maxW  = opts.width ?? 0.30;
+    const freq  = opts.freq  ?? 2;
+    const amp   = opts.amp   ?? 0.38;
+    const speed = opts.speed ?? 0.45;
+    const ph    = opts.phase ?? 0;
+
+    for (let i = 0; i < SEGS; i++) {
+      const u = i / (SEGS - 1);
+      const theta = u * Math.PI * 2;
+
+      // Three harmonics → richer, more organic motion
+      const wave = Math.sin(theta * freq        + t * speed          + ph) * amp
+                 + Math.cos(theta * freq * 1.31 + t * speed * 0.73   + ph * 1.9) * amp * 0.42
+                 + Math.sin(theta * freq * 2.19 + t * speed * 0.51   + ph * 3.3) * amp * 0.18;
+
+      let x = Math.sin(theta) * R;
+      let y = wave;
+      let z = Math.cos(theta) * R;
+
+      // Clamp inside sphere
+      const d = Math.sqrt(x*x + y*y + z*z);
+      if (d > R) { const s = R / d; x *= s; y *= s; z *= s; }
+
+      // Width tapers at the seam so loop closes cleanly
+      const taper = Math.sin(u * Math.PI);
+      const hw = maxW * 0.5 * (0.2 + 0.8 * taper);
+
+      // Perpendicular to path direction in XZ
+      const nt = theta + 0.014;
+      const dx = Math.sin(nt) * R - Math.sin(theta) * R;
+      const dz = Math.cos(nt) * R - Math.cos(theta) * R;
+      const dl = Math.sqrt(dx*dx + dz*dz) || 1;
+      const wx = (-dz / dl) * hw;
+      const wz = ( dx / dl) * hw;
+
+      va.set(x + wx, y, z + wz).applyQuaternion(quat);
+      vb.set(x - wx, y, z - wz).applyQuaternion(quat);
+
+      arr[i*6]   = va.x; arr[i*6+1] = va.y; arr[i*6+2] = va.z;
+      arr[i*6+3] = vb.x; arr[i*6+4] = vb.y; arr[i*6+5] = vb.z;
+    }
+    geo.attributes.position.needsUpdate = true;
+  });
+}
+
+// 30 ribbons — seeded deterministic random so it looks the same every load
+function seededRand(seed) {
+  let s = seed;
+  return function() {
+    s = (s * 16807 + 0) % 2147483647;
+    return (s - 1) / 2147483646;
+  };
+}
+const rand = seededRand(42);
+
+for (let i = 0; i < 30; i++) {
+  const t = i / 30;
+  // Width spans a big range: thin hair ribbons to wide sheets
+  const width = 0.04 + rand() * rand() * 0.52; // skewed toward thin
+  // Thinner ribbons get slightly higher opacity to stay visible
+  const opacity = 0.06 + (1 - width / 0.56) * 0.16;
+  addRibbon({
+    freq:  2 + rand() * 2.5,
+    amp:   0.28 + rand() * 0.22,
+    speed: 0.28 + rand() * 0.44,
+    phase: rand() * Math.PI * 2,
+    opacity,
+    width,
+    rx: rand() * Math.PI * 2,
+    ry: rand() * Math.PI * 2,
+    rz: rand() * Math.PI * 2,
+  });
+}
+
+// ── Hover → speed up ──────────────────────────────────────────
+let targetSpeed = 1.0, speedMult = 1.0;
+renderer.domElement.addEventListener('mouseenter', () => targetSpeed = 4.5);
+renderer.domElement.addEventListener('mouseleave', () => targetSpeed = 1.0);
+
+// ── Mouse parallax ────────────────────────────────────────────
+let mx = 0, my = 0, tmx = 0, tmy = 0;
+window.addEventListener('mousemove', e => {
+  mx = (e.clientX / window.innerWidth  - 0.5) * 2;
+  my = (e.clientY / window.innerHeight - 0.5) * 2;
+});
+
+// ── Animate ───────────────────────────────────────────────────
+let animTime = 0, lastTs = 0;
+
+function animate(ts) {
+  requestAnimationFrame(animate);
+  const delta = Math.min((ts - lastTs) * 0.001, 0.05); // cap delta to avoid jump on tab restore
+  lastTs = ts;
+
+  speedMult += (targetSpeed - speedMult) * 0.04;
+  animTime  += delta * speedMult;
+
+  updaters.forEach(fn => fn(animTime));
+
+  tmx += (mx - tmx) * 0.05;
+  tmy += (my - tmy) * 0.05;
+
+  orb.rotation.y = animTime * 0.14 + tmx * 0.35;
+  orb.rotation.x = -tmy * 0.22;
+
+  ringLine.quaternion.copy(camera.quaternion);
+
+  renderer.render(scene, camera);
+}
+animate(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liquid Ball</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(ellipse at 44% 40%, #dde0e8 0%, #f0f0f0 52%, #ebebeb 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script>
+const SIZE = Math.min(window.innerWidth, window.innerHeight) * 0.76;
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setSize(SIZE, SIZE);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setClearColor(0x000000, 0);
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
+camera.position.set(0, 0.15, 4.6);
+camera.lookAt(0, 0, 0);
+
+// ── Vertex shader — animated wave displacement ────────────────
+const VS = `
+  precision highp float;
+  uniform float uTime;
+  varying vec3 vWorldPos;
+  varying vec3 vOrigNormal;
+
+  float wave(vec3 p, float t) {
+    float d = 0.0;
+    // Three slow large waves — main flowing bands
+    d += sin(p.y * 2.6 + p.x * 1.3 - t * 0.41) * 0.062;
+    d += sin(p.y * 1.8 - p.z * 2.2 - t * 0.30) * 0.048;
+    d += cos(p.x * 2.8 + p.z * 1.8 + t * 0.35) * 0.035;
+    // Three faster smaller waves — surface texture
+    d += sin(p.y * 5.5 + p.z * 2.5 + t * 0.65) * 0.020;
+    d += cos(p.x * 4.8 - p.y * 3.5 + t * 0.72) * 0.014;
+    d += sin((p.x + p.z) * 4.0 - t * 0.57) * 0.010;
+    return d;
+  }
+
+  void main() {
+    float d = wave(position, uTime);
+    vec3 displaced = position + normal * d;
+    vWorldPos   = (modelMatrix * vec4(displaced,  1.0)).xyz;
+    vOrigNormal = (modelMatrix * vec4(normal,      0.0)).xyz;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(displaced, 1.0);
+  }
+`;
+
+// ── Fragment shader — Phong + Fresnel + glow ──────────────────
+const FS = `
+  precision highp float;
+  uniform vec3 uCamPos;
+  uniform vec3 uL1, uL2, uL3;
+  varying vec3 vWorldPos;
+  varying vec3 vOrigNormal;
+
+  void main() {
+    // Per-fragment normal from position derivatives — captures displaced surface accurately
+    vec3 N = normalize(cross(dFdx(vWorldPos), dFdy(vWorldPos)));
+    vec3 V = normalize(uCamPos - vWorldPos);
+    if (dot(N, V) < 0.0) N = -N;
+
+    vec3 oN = normalize(vOrigNormal);
+    float NdotV  = max(dot(N, V), 0.0);
+    float fresnel = pow(1.0 - NdotV, 4.2);
+
+    // Main light — top-right, warm
+    vec3 L1  = normalize(uL1 - vWorldPos);
+    float d1 = max(dot(N, L1), 0.0);
+    float s1 = pow(max(dot(normalize(L1 + V), N), 0.0), 220.0);
+
+    // Fill light — top-left, cool
+    vec3 L2  = normalize(uL2 - vWorldPos);
+    float d2 = max(dot(N, L2), 0.0) * 0.38;
+    float s2 = pow(max(dot(normalize(L2 + V), N), 0.0), 85.0) * 0.22;
+
+    // Rim light — bottom-back
+    vec3 L3  = normalize(uL3 - vWorldPos);
+    float d3 = max(dot(N, L3), 0.0) * 0.10;
+
+    // Base color: cool white-silver
+    vec3 base = vec3(0.93, 0.95, 0.97);
+    vec3 col  = base * (0.20 + d1 * 0.62 + d2 + d3);
+
+    // Specular highlights
+    col += vec3(1.00, 1.00, 1.00) * s1 * 1.15;
+    col += vec3(0.86, 0.92, 1.00) * s2;
+
+    // Fresnel — steel-blue at glancing angles
+    col = mix(col, vec3(0.58, 0.65, 0.76), fresnel * 0.56);
+
+    // Soft inner backlight (subsurface scatter approximation)
+    float bl = pow(max(dot(-oN, V), 0.0), 2.8) * 0.10;
+    col += vec3(0.80, 0.88, 1.00) * bl;
+
+    gl_FragColor = vec4(col, 1.0);
+  }
+`;
+
+const mat = new THREE.ShaderMaterial({
+  uniforms: {
+    uTime:   { value: 0.0 },
+    uCamPos: { value: camera.position },
+    uL1: { value: new THREE.Vector3( 3.2,  5.0,  3.5) },
+    uL2: { value: new THREE.Vector3(-3.0,  2.2,  2.2) },
+    uL3: { value: new THREE.Vector3( 0.0, -2.8, -2.0) },
+  },
+  vertexShader: VS,
+  fragmentShader: FS,
+  extensions: { derivatives: true },
+  side: THREE.FrontSide,
+});
+
+// High-poly sphere — 256 subdivisions for smooth wave displacement
+const mesh = new THREE.Mesh(new THREE.SphereGeometry(1.22, 256, 256), mat);
+scene.add(mesh);
+
+// ── Mouse tilt ────────────────────────────────────────────────
+let mx = 0, my = 0, tmx = 0, tmy = 0;
+window.addEventListener('mousemove', e => {
+  mx = (e.clientX / window.innerWidth  - 0.5) * 2;
+  my = (e.clientY / window.innerHeight - 0.5) * 2;
+});
+
+// ── Animate ───────────────────────────────────────────────────
+function animate(ts) {
+  requestAnimationFrame(animate);
+  const t = ts * 0.001;
+  mat.uniforms.uTime.value = t;
+
+  tmx += (mx * 0.32 - tmx) * 0.035;
+  tmy += (my * 0.22 - tmy) * 0.035;
+  mesh.rotation.y = tmx + t * 0.07;
+  mesh.rotation.x = -tmy;
+
+  renderer.render(scene, camera);
+}
+animate(0);
+</script>
+</body>
+</html>
