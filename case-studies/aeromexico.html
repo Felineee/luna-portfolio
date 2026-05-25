@@ -144,6 +144,18 @@
       font-weight: 500;
       margin-bottom: 48px;
       color: var(--ink);
+      position: relative;
+      padding-top: 24px;
+    }
+
+    .section-title::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 40px;
+      height: 1px;
+      background: var(--rule);
     }
 
     .section-intro {
@@ -385,6 +397,75 @@
       color: var(--ink);
     }
 
+    /* ─── SECTION COLLAPSE/EXPAND ──────────────────── */
+    section[data-section] {
+      transition: opacity 0.3s ease;
+    }
+
+    section[data-section].collapsed > :not(.section-title) {
+      display: none;
+    }
+
+    section[data-section].collapsed .section-title {
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    /* ─── STICKY TITLE BAR ──────────────────────────── */
+    #sticky-titles {
+      position: fixed;
+      top: 56px;
+      left: 0;
+      right: 0;
+      display: flex;
+      gap: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--rule);
+      z-index: 99;
+      padding: 0 48px;
+      height: auto;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    #sticky-titles.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .sticky-title {
+      padding: 12px 16px;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--ink);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+      position: relative;
+      border-right: 1px solid var(--rule);
+      flex-shrink: 0;
+      transform: scale(1);
+      transform-origin: left;
+    }
+
+    .sticky-title:last-child {
+      border-right: none;
+    }
+
+    .sticky-title:hover {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    .sticky-title.stacked {
+      font-size: 13px;
+      padding: 8px 12px;
+      transform: scale(0.8);
+      opacity: 0.7;
+    }
+
     @media (max-width: 768px) {
       .hero-meta {
         grid-template-columns: 1fr;
@@ -414,6 +495,10 @@
       .container {
         padding: 0 24px;
       }
+
+      #sticky-titles {
+        display: none !important;
+      }
     }
   </style>
 </head>
@@ -435,6 +520,9 @@
     </a>
   </div>
 </nav>
+
+<!-- STICKY TITLES BAR -->
+<div id="sticky-titles"></div>
 
 <main>
   <!-- HERO SECTION -->
@@ -490,7 +578,7 @@
   </section>
 
   <!-- UNDERSTAND BUSINESS OBJECTIVES -->
-  <section>
+  <section data-section="objectives">
     <div class="container">
       <h2 class="section-title">Understand Business Objectives</h2>
       <p class="section-intro">Through 6 workshops with stakeholders across business, product, and UX, we aligned the project around two goals: improve the traveler experience and reduce costs.</p>
@@ -559,7 +647,7 @@
   </section>
 
   <!-- DEFINE THE PROBLEMS -->
-  <section>
+  <section data-section="problems">
     <div class="container">
       <h2 class="section-title">Define the Problems</h2>
       <p class="section-intro">When flights were delayed, canceled, or disrupted, travelers had to rely on agents, call centers, and manual support to understand what they could do next. This created three major problems:</p>
@@ -584,7 +672,7 @@
   </section>
 
   <!-- DESIGN SOLUTIONS -->
-  <section>
+  <section data-section="solutions">
     <div class="container">
       <h2 class="section-title">Design Solutions</h2>
       <p class="section-intro">Based on the three CX problems, we defined three design principles to guide the travel disruption self-service experience.</p>
@@ -631,7 +719,7 @@
   </section>
 
   <!-- WIREFRAMING -->
-  <section>
+  <section data-section="wireframing">
     <div class="container">
       <h2 class="section-title">Wireframing</h2>
 
@@ -656,7 +744,7 @@
   </section>
 
   <!-- DESIGN DELIVERY -->
-  <section>
+  <section data-section="delivery">
     <div class="container">
       <h2 class="section-title">Design Delivery</h2>
       <p class="section-intro">The redesigned experience brought the core disruption recovery actions from manual and paper-based processes into mobile self-service.</p>
@@ -665,7 +753,7 @@
   </section>
 
   <!-- IMPACT -->
-  <section>
+  <section data-section="impact">
     <div class="container">
       <h2 class="section-title">Impact</h2>
       <div class="impact-content">
@@ -692,6 +780,154 @@
     </div>
   </section>
 </main>
+
+<script>
+  // ── SCROLL ANIMATION: Sticky Titles with Collapse/Expand ──────────────
+  const stickyTitlesBar = document.getElementById('sticky-titles');
+  const sections = Array.from(document.querySelectorAll('section[data-section]'));
+  let lastScrollY = 0;
+  let isScrollingDown = false;
+  const stickyTitles = new Map();
+
+  // Intersection Observer to detect sections entering viewport
+  const observerOptions = {
+    root: null,
+    rootMargin: '-56px 0px -50% 0px',
+    threshold: 0
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const section = entry.target;
+      const sectionId = section.getAttribute('data-section');
+
+      if (entry.isIntersecting) {
+        // Section is visible, make sure sticky title exists
+        if (!stickyTitles.has(sectionId)) {
+          createStickyTitle(sectionId);
+        }
+      }
+    });
+  }, observerOptions);
+
+  // Watch all sections
+  sections.forEach(section => observer.observe(section));
+
+  // Create sticky title for a section
+  function createStickyTitle(sectionId) {
+    const section = document.querySelector(`section[data-section="${sectionId}"]`);
+    const titleElement = section.querySelector('.section-title');
+    const titleText = titleElement.textContent;
+
+    const stickyTitle = document.createElement('div');
+    stickyTitle.className = 'sticky-title';
+    stickyTitle.textContent = titleText;
+    stickyTitle.dataset.section = sectionId;
+
+    stickyTitle.addEventListener('click', () => {
+      smoothScrollToSection(sectionId);
+    });
+
+    stickyTitlesBar.appendChild(stickyTitle);
+    stickyTitles.set(sectionId, stickyTitle);
+    updateStickyTitles();
+  }
+
+  // Update sticky title styles based on scroll position
+  function updateStickyTitles() {
+    const activeSectionIndex = getActiveSectionIndex();
+
+    stickyTitles.forEach((title, sectionId) => {
+      const sectionIndex = sections.findIndex(s => s.getAttribute('data-section') === sectionId);
+
+      // Only show titles for sections that have been scrolled past
+      if (sectionIndex <= activeSectionIndex) {
+        title.style.display = 'block';
+
+        // Add stacked class to all but the most recent
+        if (sectionIndex < activeSectionIndex) {
+          title.classList.add('stacked');
+        } else {
+          title.classList.remove('stacked');
+        }
+      } else {
+        title.style.display = 'none';
+      }
+    });
+
+    // Show/hide sticky bar
+    if (stickyTitles.size > 0) {
+      stickyTitlesBar.classList.add('active');
+    }
+  }
+
+  // Get index of currently active section
+  function getActiveSectionIndex() {
+    const scrollPos = window.scrollY + 100;
+
+    for (let i = sections.length - 1; i >= 0; i--) {
+      if (sections[i].offsetTop <= scrollPos) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  // Expand/collapse sections based on scroll
+  function updateSectionStates() {
+    const scrollPos = window.scrollY + 200;
+
+    sections.forEach((section, index) => {
+      const sectionId = section.getAttribute('data-section');
+      const sectionTop = section.offsetTop;
+
+      if (isScrollingDown && sectionTop < scrollPos) {
+        // Scrolling down: collapse sections that are scrolled past
+        section.classList.add('collapsed');
+      } else {
+        // Scrolling up or at the section: expand
+        section.classList.remove('collapsed');
+      }
+    });
+  }
+
+  // Smooth scroll to section and expand it and sections below
+  function smoothScrollToSection(sectionId) {
+    const section = document.querySelector(`section[data-section="${sectionId}"]`);
+    const sectionIndex = sections.findIndex(s => s.getAttribute('data-section') === sectionId);
+
+    // Expand clicked section and all below
+    sections.forEach((s, index) => {
+      if (index >= sectionIndex) {
+        s.classList.remove('collapsed');
+      } else {
+        s.classList.add('collapsed');
+      }
+    });
+
+    // Smooth scroll
+    window.scrollTo({
+      top: section.offsetTop - 80,
+      behavior: 'smooth'
+    });
+
+    isScrollingDown = false;
+  }
+
+  // Scroll event listener
+  window.addEventListener('scroll', () => {
+    const currentScrollY = window.scrollY;
+    isScrollingDown = currentScrollY > lastScrollY;
+    lastScrollY = currentScrollY;
+
+    updateSectionStates();
+    updateStickyTitles();
+  });
+
+  // Initial state
+  updateSectionStates();
+  updateStickyTitles();
+</script>
 
 </body>
 </html>
