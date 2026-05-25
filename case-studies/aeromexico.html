@@ -839,17 +839,21 @@
 
   // Update sticky title styles based on scroll position
   function updateStickyTitles() {
+    const scrollPos = window.scrollY + 100;
     const activeSectionIndex = getActiveSectionIndex();
 
+    // Show all created titles that represent sections we've scrolled past
     stickyTitles.forEach((title, sectionId) => {
-      const sectionIndex = sections.findIndex(s => s.getAttribute('data-section') === sectionId);
+      const section = document.querySelector(`section[data-section="${sectionId}"]`);
+      const sectionIndex = sections.indexOf(section);
 
-      // Only show titles for sections that have been scrolled past
-      if (sectionIndex <= activeSectionIndex) {
-        title.style.display = 'block';
+      // Show title if this section or a later section has started
+      if (sectionIndex <= activeSectionIndex || section.offsetTop <= scrollPos) {
+        title.style.display = 'flex';
 
-        // Add stacked class to all but the most recent
-        if (sectionIndex < activeSectionIndex) {
+        // Add stacked class to titles that are not the current section
+        const currentIndex = sections.findIndex(s => s.offsetTop > scrollPos);
+        if (currentIndex > sectionIndex && sectionIndex >= 0) {
           title.classList.add('stacked');
         } else {
           title.classList.remove('stacked');
@@ -859,9 +863,11 @@
       }
     });
 
-    // Show/hide sticky bar
+    // Show/hide sticky bar if we have created titles
     if (stickyTitles.size > 0) {
       stickyTitlesBar.classList.add('active');
+    } else {
+      stickyTitlesBar.classList.remove('active');
     }
   }
 
