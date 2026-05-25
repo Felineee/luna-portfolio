@@ -418,10 +418,9 @@
       left: 0;
       right: 0;
       display: flex;
+      flex-direction: column;
       gap: 0;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      background: white;
       border-bottom: 1px solid var(--rule);
       z-index: 99;
       padding: 0 48px;
@@ -429,6 +428,7 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s ease;
+      align-items: flex-start;
     }
 
     #sticky-titles.active {
@@ -445,29 +445,31 @@
       white-space: nowrap;
       transition: all 0.3s ease;
       position: relative;
-      border-right: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
       flex-shrink: 0;
-      transform: scale(1);
-      transform-origin: left;
+      transform: translateY(0) scale(1);
+      transform-origin: top left;
       display: flex;
       align-items: center;
       min-height: 48px;
       line-height: 1.2;
+      width: 100%;
     }
 
     .sticky-title:last-child {
-      border-right: none;
+      border-bottom: none;
     }
 
     .sticky-title:hover {
-      background: rgba(0, 0, 0, 0.03);
+      background: rgba(0, 0, 0, 0.02);
     }
 
     .sticky-title.stacked {
-      font-size: 13px;
+      font-size: 12px;
       padding: 8px 12px;
-      transform: scale(0.8);
-      opacity: 0.7;
+      min-height: 32px;
+      transform: translateY(-100%) scale(0.85);
+      opacity: 0.6;
     }
 
     @media (max-width: 768px) {
@@ -840,31 +842,41 @@
   // Update sticky title styles based on scroll position
   function updateStickyTitles() {
     const scrollPos = window.scrollY + 100;
-    const activeSectionIndex = getActiveSectionIndex();
 
-    // Show all created titles that represent sections we've scrolled past
+    // Arrange titles in order and apply transforms
+    const visibleTitles = [];
     stickyTitles.forEach((title, sectionId) => {
       const section = document.querySelector(`section[data-section="${sectionId}"]`);
       const sectionIndex = sections.indexOf(section);
 
-      // Show title if this section or a later section has started
-      if (sectionIndex <= activeSectionIndex || section.offsetTop <= scrollPos) {
+      // Show title if we've scrolled past this section's start
+      if (section.offsetTop <= scrollPos) {
+        visibleTitles.push({ index: sectionIndex, title, sectionId });
         title.style.display = 'flex';
-
-        // Add stacked class to titles that are not the current section
-        const currentIndex = sections.findIndex(s => s.offsetTop > scrollPos);
-        if (currentIndex > sectionIndex && sectionIndex >= 0) {
-          title.classList.add('stacked');
-        } else {
-          title.classList.remove('stacked');
-        }
       } else {
         title.style.display = 'none';
       }
     });
 
-    // Show/hide sticky bar if we have created titles
-    if (stickyTitles.size > 0) {
+    // Sort by section index to maintain order
+    visibleTitles.sort((a, b) => a.index - b.index);
+
+    // Apply stacking transforms: most recent at bottom (normal), older ones move up and shrink
+    visibleTitles.forEach((item, positionFromBottom) => {
+      const title = item.title;
+      const positionFromTop = visibleTitles.length - 1 - positionFromBottom;
+
+      if (positionFromTop === visibleTitles.length - 1) {
+        // Current/most recent title - full size at bottom
+        title.classList.remove('stacked');
+      } else {
+        // Previous titles - stack above and shrink
+        title.classList.add('stacked');
+      }
+    });
+
+    // Show/hide sticky bar
+    if (visibleTitles.length > 0) {
       stickyTitlesBar.classList.add('active');
     } else {
       stickyTitlesBar.classList.remove('active');
